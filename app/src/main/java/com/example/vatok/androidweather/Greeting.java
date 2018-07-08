@@ -12,7 +12,7 @@ public class Greeting {
         this.context = context;
     }
 
-    //для тестов, так и не получилось прикрутить тесты, т.к. не смог получить контекст
+    //для тестов, так и не получилось прикрутить юнит тесты, т.к. не смог передать туда контекст
     public Greeting(Context context, int hour) {
         currentHour = hour;
         this.context = context;
