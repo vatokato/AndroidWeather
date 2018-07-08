@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">AndroidWeather</string>
+    <string name="app_name">Погода</string>
+    <string name="greeting">Hello World!</string>
 </resources>
