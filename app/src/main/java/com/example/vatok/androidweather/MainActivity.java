@@ -3,8 +3,6 @@ package com.example.vatok.androidweather;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-//изменение 1
-//изменение 2
 public class MainActivity extends AppCompatActivity {
 
     @Override
