@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Погода</string>
-    <string name="greeting">Hello World!</string>
+    <string name="greetingBuilder">Hello World!</string>
 
-    <string name="goodMorning">Доброе утро! Сейчас</string>
-    <string name="goodAfternoon">Добрый день! Сейчас</string>
-    <string name="goodEvening">Добрый вечер! Сейчас</string>
-    <string name="goodNight">Доброй ночи! Сейчас</string>
+    <string name="greeter">Пользователь</string>
+    <string name="now">Сейчас</string>
+    <string name="goodMorning">Доброе утро</string>
+    <string name="goodAfternoon">Добрый день</string>
+    <string name="goodEvening">Добрый вечер</string>
+    <string name="goodNight">Доброй ночи</string>
 </resources>
