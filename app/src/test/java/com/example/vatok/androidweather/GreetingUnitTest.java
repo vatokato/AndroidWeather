@@ -1,12 +1,7 @@
 package com.example.vatok.androidweather;
-
-
 import org.junit.Test;
-
 import static junit.framework.Assert.assertEquals;
-
 public class GreetingUnitTest {
-
     @Test
     public void getGreetingMorning() {
         GreetingStrings greetingStrings = new GreetingStrings() {
