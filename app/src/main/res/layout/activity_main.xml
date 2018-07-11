@@ -10,9 +10,64 @@
         android:id="@+id/greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/greetingBuilder"
+        android:text="@string/greeting"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/weatherValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/weatherValue"
+        android:textAlignment="center"
+        android:textSize="80sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/city"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/greeting"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/weatherType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/weatherType"
+        app:layout_constraintTop_toBottomOf="@+id/weatherValue"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/city">
+
+        <EditText
+            android:id="@+id/enterCityField"
+            android:layout_width="140sp"
+            android:layout_height="wrap_content"
+            android:hint="@string/cityFieldHint" />
+
+        <Button
+            android:id="@+id/enterCityButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Submit"
+            app:layout_constraintLeft_toRightOf="@+id/enterCityField" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
