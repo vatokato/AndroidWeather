@@ -1,6 +1,6 @@
 package com.example.vatok.androidweather;
 
-public interface GreetingRes {
+public interface GreetingStrings {
     String getNow();
     String getGreeter();
     String getMorning();
