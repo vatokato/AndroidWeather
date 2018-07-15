@@ -10,9 +10,14 @@
     <string name="goodNight">Доброй ночи</string>
 
     <string name="city">Москва</string>
-    <string name="weatherValue">+20</string>
+    <string name="weatherValue">+99°</string>
     <string name="weatherType">облачно</string>
 
     <string name="cityFieldHint">Город</string>
+    <string name="nameFieldHint">Имя</string>
+    <string name="edit">Редактировать</string>
     <string name="Submit">Отправить</string>
+
+
+    <string name="toastBackText">Для выхода нажмите еще раз</string>
 </resources>

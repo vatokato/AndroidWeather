@@ -1,145 +1,104 @@
 package com.example.vatok.androidweather;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements GreetingStrings {
+import timber.log.Timber;
+
+public class MainActivity extends AppCompatActivity {
     private static String TAG = "MainActivity";
-    TextView city;
-    EditText enterCityField;
-    Button enterCityButton;
+
+    EditText nameEditText;
+    AutoCompleteTextView cityAutoText;
+    Button button;
+
+    UserData userData;
+
+    BackTimer backTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        city = findViewById(R.id.city);
-        enterCityField = findViewById(R.id.enterCityField);
-        enterCityButton = findViewById(R.id.enterCityButton);
 
-        TextView greetingTextView = findViewById(R.id.greeting);
-        GreetingBuilder greetingBuilder = new GreetingBuilder(this);
-        greetingTextView.setText( greetingBuilder.getText() );
+        nameEditText = findViewById(R.id.et_name);
+        cityAutoText = findViewById(R.id.et_city);
+        button = findViewById(R.id.button);
 
-        if(savedInstanceState==null) {
-            Toast.makeText(this, "OnCreate first run", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "OnCreate first run");
-        }
-        else {
-            Toast.makeText(this, "OnCreate recreate", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "OnCreate recreate");
+        String[] cities = {"Москва", "Екатеринбург", "Санкт Петербург", "Сочи", "Мурманск", "Москва 2"};
+        cityAutoText.setAdapter(new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,cities));
+
+        if(getIntent().hasExtra("userData"))
+        {
+            userData = (UserData) getIntent().getSerializableExtra("userData");
+            nameEditText.setText(userData.getName());
+            cityAutoText.setText(userData.getCity());
         }
 
-        enterCityButton.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!enterCityField.getText().toString().isEmpty()) {
-                    city.setText( enterCityField.getText().toString() );
+                String name = nameEditText.getText().toString().trim();
+                String city = cityAutoText.getText().toString().trim();
+
+                if(name.isEmpty() || city.isEmpty())
+                {
+                    Toast.makeText(MainActivity.this, "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                if(getCallingActivity() != null)
+                {
+                    userData.setName(name);
+                    userData.setCity(city);
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("userData", userData);
+                    setResult(Activity.RESULT_OK, resultIntent);
+                }
+                else {
+                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+                    intent.putExtra("userData", new UserData(name, city));
+                    startActivity(intent);
+                }
+                finish();
             }
         });
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-        Toast.makeText(this, "onStart()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onStart()");
+    public void onBackPressed() {
+        if(BackTimer.isBackPressed()==false){
+            backTimer = new BackTimer();
+            backTimer.start();
+            Toast.makeText(this, getString(R.string.toastBackText), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
         super.onRestoreInstanceState(savedInstanceState);
-        city.setText( savedInstanceState.getString("currentCity") );
-        Toast.makeText(this, "onRestoreInstanceState()", Toast.LENGTH_SHORT).show();
         Log.d(TAG,"onRestoreInstanceState()");
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Toast.makeText(this, "onResume()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onResume()");
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        Toast.makeText(this, "onPause()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onPause()");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putString("currentCity", city.getText().toString());
-        Toast.makeText(this, "onSaveInstanceState()", Toast.LENGTH_SHORT).show();
         Log.d(TAG,"onSaveInstanceState()");
     }
 
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-        Toast.makeText(this, "onStop()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onStop()");
-    }
 
-    @Override
-    protected void onRestart()
-    {
-        super.onRestart();
-        Toast.makeText(this, "onRestart()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onRestart()");
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Toast.makeText(this, "onDestroy()", Toast.LENGTH_SHORT).show();
-        Log.d(TAG,"onDestroy()");
-    }
-
-
-    @Override
-    public String getNow() {
-        return getString(R.string.now);
-    }
-
-    @Override
-    public String getGreeter() {
-        return getString(R.string.greeter);
-    }
-
-    @Override
-    public String getMorning() {
-        return getString(R.string.goodMorning);
-    }
-
-    @Override
-    public String getAfternoon() {
-        return getString(R.string.goodAfternoon);
-    }
-
-    @Override
-    public String getEvening() {
-        return getString(R.string.goodEvening);
-    }
-
-    @Override
-    public String getNight() {
-        return getString(R.string.goodNight);
-    }
 }
