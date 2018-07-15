@@ -6,7 +6,7 @@ public class BackTimer extends Thread {
     public void run() {
         backPressed = true;
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
             backPressed = false;
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -90,15 +90,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.d(TAG,"onRestoreInstanceState()");
+        userData = (UserData) savedInstanceState.getSerializable("userData");
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        Log.d(TAG,"onSaveInstanceState()");
+        outState.putSerializable("userData",userData);
     }
-
-
 }
