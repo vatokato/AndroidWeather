@@ -109,8 +109,6 @@ public class WeatherActivity extends AppCompatActivity implements GreetingString
     @Override
     public void onBackPressed() {
         if(BackTimer.isBackPressed()==false){
-            backTimer = new BackTimer();
-            backTimer.start();
             Toast.makeText(this, getString(R.string.toastBackText), Toast.LENGTH_SHORT).show();
             return;
         }

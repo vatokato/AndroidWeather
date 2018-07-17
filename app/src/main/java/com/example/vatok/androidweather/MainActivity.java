@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(BackTimer.isBackPressed()==false){
-            backTimer = new BackTimer();
-            backTimer.start();
             Toast.makeText(this, getString(R.string.toastBackText), Toast.LENGTH_SHORT).show();
             return;
         }

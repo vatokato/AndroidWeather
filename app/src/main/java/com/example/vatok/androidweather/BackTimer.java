@@ -1,19 +1,16 @@
 package com.example.vatok.androidweather;
 
-public class BackTimer extends Thread {
-    public static boolean backPressed = false;
-
-    public void run() {
-        backPressed = true;
-        try {
-            Thread.sleep(5000);
-            backPressed = false;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+import java.util.Date;
+public class BackTimer  {
+    public  static long lastTime;
 
     public static boolean isBackPressed() {
-        return backPressed;
+        Date date = new Date();
+        long newTime = date.getTime();
+        if(newTime-lastTime<2000)
+            return true;
+
+        lastTime = newTime;
+        return false;
     }
 }
