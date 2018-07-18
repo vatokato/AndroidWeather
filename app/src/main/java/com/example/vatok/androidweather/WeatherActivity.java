@@ -32,7 +32,6 @@ public class WeatherActivity extends AppCompatActivity implements GreetingString
         setContentView(R.layout.acitvity_weather);
 
         weatherTypes = new String[]{"облачно", "ясно", "дождь"};
-
         userData =(UserData) getIntent().getSerializableExtra("userData");
 
         button = findViewById(R.id.button);
@@ -85,6 +84,7 @@ public class WeatherActivity extends AppCompatActivity implements GreetingString
     {
         greetingTextView.setText(new GreetingBuilder(this).getText());
         cityTextView.setText(userData.getCity());
+        weatherTempTextView.setTextColor(userData.getWeatherTemperatureColor());
         weatherTempTextView.setText(userData.getWeatherTemperature());
         weatherTypeTextView.setText(userData.getWeatherType());
     }

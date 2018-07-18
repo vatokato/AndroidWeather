@@ -1,12 +1,17 @@
 package com.example.vatok.androidweather;
 
+import android.graphics.Color;
+
 import java.io.Serializable;
 import java.util.Random;
+
+import timber.log.Timber;
 
 public class UserData implements Serializable {
     private String name;
     private String city;
 
+    private int weatherTemperatureColor;
     private int weatherTemperature;
     private String weatherType;
 
@@ -37,6 +42,12 @@ public class UserData implements Serializable {
 
     public void setWeatherTemperature() {
         this.weatherTemperature = new Random().nextInt(60)-30;
+
+        int red = this.weatherTemperature>=0 ? (int)((float)255/30*(float)this.weatherTemperature) : 0;
+        int blue = this.weatherTemperature<0 ? (int)((float)255/30*(float)-this.weatherTemperature) : 0;
+//        this.weatherTemperatureColor = String.format("#%s", Integer.toHexString(Color.rgb(red, 0, blue)));
+        this.weatherTemperatureColor = Color.rgb(red, 0, blue);
+        Timber.d(this.weatherTemperatureColor+"");
     }
 
     public String getWeatherType() {
@@ -45,5 +56,9 @@ public class UserData implements Serializable {
 
     public void setWeatherType(String[] weatherTypes) {
         this.weatherType = weatherTypes[new Random().nextInt(weatherTypes.length)];
+    }
+
+    public int getWeatherTemperatureColor() {
+        return weatherTemperatureColor;
     }
 }
