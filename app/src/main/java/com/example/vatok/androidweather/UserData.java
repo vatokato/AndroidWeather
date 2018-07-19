@@ -41,13 +41,20 @@ public class UserData implements Serializable {
     }
 
     public void setWeatherTemperature() {
-        this.weatherTemperature = new Random().nextInt(60)-30;
+        this.weatherTemperature = new Random().nextInt(70)-30;
 
-        int red = this.weatherTemperature>=0 ? (int)((float)255/30*(float)this.weatherTemperature) : 0;
-        int blue = this.weatherTemperature<0 ? (int)((float)255/30*(float)-this.weatherTemperature) : 0;
-//        this.weatherTemperatureColor = String.format("#%s", Integer.toHexString(Color.rgb(red, 0, blue)));
-        this.weatherTemperatureColor = Color.rgb(red, 0, blue);
-        Timber.d(this.weatherTemperatureColor+"");
+        int red = 0, green = 0, blue = 0;
+
+        if(this.weatherTemperature>24) {
+            red = (int)((float)255/40*(float)this.weatherTemperature);
+        }
+        else if(15 < this.weatherTemperature && this.weatherTemperature < 25) {
+            green = 255;
+        }
+        else {
+            blue = (int)((float)255/45*(float)-(this.weatherTemperature-15));
+        }
+        this.weatherTemperatureColor = Color.rgb(red, green, blue);
     }
 
     public String getWeatherType() {

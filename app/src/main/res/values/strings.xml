@@ -19,5 +19,6 @@
     <string name="Submit">Отправить</string>
 
 
+    <string name="toastEmptyForm">Пожалуйста заполните все поля</string>
     <string name="toastBackText">Для выхода нажмите еще раз</string>
 </resources>

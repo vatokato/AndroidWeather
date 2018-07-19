@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="weatherTypes">
+        <item>облачно</item>
+        <item>ясно</item>
+        <item>дождь</item>
+        <item>туман</item>
+    </string-array>
+    <string-array name="cities">
+        <item>Москва</item>
+        <item>Екатеринбург</item>
+        <item>Санкт Петербург</item>
+        <item>Мурманск</item>
+        <item>Москва 2</item>
+    </string-array>
+</resources>

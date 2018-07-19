@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         cityAutoText = findViewById(R.id.et_city);
         button = findViewById(R.id.button);
 
-        String[] cities = {"Москва", "Екатеринбург", "Санкт Петербург", "Сочи", "Мурманск", "Москва 2"};
+        String[] cities = getResources().getStringArray(R.array.cities);
         cityAutoText.setAdapter(new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,cities));
 
         if(getIntent().hasExtra("userData"))
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(name.isEmpty() || city.isEmpty())
                 {
-                    Toast.makeText(MainActivity.this, "Пожалуйста заполните все поля", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.toastEmptyForm), Toast.LENGTH_SHORT).show();
                     return;
                 }
 

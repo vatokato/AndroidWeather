@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="weatherTypes">
+        <item>cloudy</item>
+        <item>clear</item>
+        <item>rain</item>
+        <item>fog</item>
+    </string-array>
+    <string-array name="cities">
+        <item>Moscow</item>
+        <item>Yekaterinburg</item>
+        <item>St. Petersburg</item>
+        <item>Murmansk</item>
+        <item>Moscow 2</item>
+    </string-array>
+</resources>
