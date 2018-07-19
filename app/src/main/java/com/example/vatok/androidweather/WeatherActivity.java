@@ -32,7 +32,17 @@ public class WeatherActivity extends AppCompatActivity implements GreetingString
         setContentView(R.layout.acitvity_weather);
 
         weatherTypes = getResources().getStringArray(R.array.weatherTypes);
-        userData =(UserData) getIntent().getSerializableExtra("userData");
+
+        if (getIntent().hasExtra("userData"))
+        {
+            userData = (UserData) getIntent().getSerializableExtra("userData");
+        }
+        else if (getIntent().hasExtra("name") && getIntent().hasExtra("city"))
+        {
+            String name = getIntent().getStringExtra("name");
+            String city = getIntent().getStringExtra("city");
+            userData = new UserData(name, city);
+        }
 
         button = findViewById(R.id.button);
         greetingTextView = findViewById(R.id.greeting);
