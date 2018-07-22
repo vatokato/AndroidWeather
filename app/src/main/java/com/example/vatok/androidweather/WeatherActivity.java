@@ -2,6 +2,7 @@ package com.example.vatok.androidweather;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,16 +34,28 @@ public class WeatherActivity extends AppCompatActivity implements GreetingString
 
         weatherTypes = getResources().getStringArray(R.array.weatherTypes);
 
+        // если сработал интент фильтр
+        Uri intentData = getIntent().getData();
+        if (intentData != null)
+        {
+            String city = intentData.getQueryParameter("city");
+            String name = intentData.getQueryParameter("name");
+            userData = new UserData(name, city);
+        }
+        //если юзер дата есть
         if (getIntent().hasExtra("userData"))
         {
             userData = (UserData) getIntent().getSerializableExtra("userData");
         }
+        //если нам передали только имя и город, то создаем юзердату
         else if (getIntent().hasExtra("name") && getIntent().hasExtra("city"))
         {
             String name = getIntent().getStringExtra("name");
             String city = getIntent().getStringExtra("city");
             userData = new UserData(name, city);
         }
+
+        //String action = getIntent().getAction();
 
         button = findViewById(R.id.button);
         greetingTextView = findViewById(R.id.greeting);
