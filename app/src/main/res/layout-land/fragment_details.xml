@@ -7,13 +7,6 @@
     android:focusable="true"
     android:background="?android:attr/detailsElementBackground">
 
-    <TextView
-        android:id="@+id/tv_city"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tv_temperature"/>
 
     <TextView
         android:id="@+id/tv_temperature"

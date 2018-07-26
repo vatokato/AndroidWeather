@@ -2,6 +2,7 @@ package com.example.vatok.androidweather;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -55,7 +56,11 @@ public class CitiesFragment extends ListFragment
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             getListView().setItemChecked(data.getCurrentCityId(), true);
         }
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override

@@ -12,10 +12,11 @@ import timber.log.Timber;
 
 public class DetailsFragment extends Fragment
 {
-    public static Fragment newInstance(Data data)
+    public static Fragment newInstance(int currentCity, Data data)
     {
         DetailsFragment fragment = new DetailsFragment();
         Bundle args = new Bundle();
+        args.putInt("currentCity", currentCity);
         args.putSerializable("data", data);
         fragment.setArguments(args);
         return fragment;
@@ -23,6 +24,7 @@ public class DetailsFragment extends Fragment
 
     TextView temperatureTextVeiw;
     TextView typeTextVeiw;
+    TextView cityTextVeiw;
     Data data;
     Publisher publisher;
 
@@ -38,7 +40,11 @@ public class DetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         Timber.d("onCreateView Details");
+
+        System.out.println(getArguments());
+
         data = (Data) getArguments().getSerializable("data");
+        data.setCurrentCityId( getArguments().getInt("currentCity") );
 
         View view = inflater.inflate(R.layout.fragment_details, null);
         temperatureTextVeiw = view.findViewById(R.id.tv_temperature);
@@ -48,6 +54,11 @@ public class DetailsFragment extends Fragment
         temperatureTextVeiw.setText(""+cityInfo.getTemperatureString());
         temperatureTextVeiw.setTextColor(cityInfo.getTemperatureColor());
         typeTextVeiw.setText(""+cityInfo.getType());
+
+        cityTextVeiw = view.findViewById(R.id.tv_city);
+        if(cityTextVeiw!=null) {
+            cityTextVeiw.setText(cityInfo.getName());
+        }
 
         return view;
     }

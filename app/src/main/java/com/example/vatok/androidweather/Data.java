@@ -18,9 +18,8 @@ public class Data implements Serializable {
 
     public Data(String[] cities, String[] weatherTypes) {
         cityInfoArrayList = new ArrayList<>();
-
         this.cities = cities;
-        System.out.println(Arrays.deepToString(cities));
+
         for (int i = 0; i < cities.length; i++) {
             cityInfoArrayList.add(new CityInfo(
                     cities[i],

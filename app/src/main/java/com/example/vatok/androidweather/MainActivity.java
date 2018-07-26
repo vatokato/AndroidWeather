@@ -1,5 +1,6 @@
 package com.example.vatok.androidweather;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import timber.log.Timber;
@@ -23,16 +24,13 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         publisher.subscribe(this);
         if (savedInstanceState == null)
         {
-            Timber.d("onCreate first");
             data = new Data(getResources().getStringArray(R.array.cities),  getResources().getStringArray(R.array.weatherTypes));
             updateList(0);
         }
         else {
-            Timber.d("onCreate second");
             data = (Data) savedInstanceState.getSerializable("data");
         }
 
-        data.setMasterDetail(findViewById(R.id.fl_detail) != null);
     }
 
     @Override
@@ -59,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         Timber.d("updateList");
 
         data.setCurrentCityId(currentCity);
+        data.setMasterDetail(findViewById(R.id.fl_detail) != null);
 
         if(data.getName() == null) {
             getSupportFragmentManager().beginTransaction()
@@ -68,21 +67,29 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         }
 
         if(data.isMasterDetail()) {
+
+            // если мы на альбомной, а мастере лежит артефакт от портрета делаем шаг назад
+            if(getSupportFragmentManager().findFragmentById(R.id.fl_master) instanceof DetailsFragment)
+            {
+                getSupportFragmentManager().popBackStack();
+            }
+
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_detail, DetailsFragment.newInstance(data))
+                    .replace(R.id.fl_detail, DetailsFragment.newInstance(currentCity, data))
                     .replace(R.id.fl_master, CitiesFragment.newInstance(currentCity, data))
                     .addToBackStack(""+currentCity)
                     .commit();
         }
         else {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_master, CitiesFragment.newInstance(currentCity, data))
-                    .addToBackStack(""+currentCity)
-                    .commit();
-
-            if(!firstTime) {
+            if(firstTime) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fl_master, DetailsFragment.newInstance(data))
+                        .replace(R.id.fl_master, CitiesFragment.newInstance(currentCity, data))
+                        .addToBackStack(""+currentCity)
+                        .commit();
+            }
+            else  {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fl_master, DetailsFragment.newInstance(currentCity, data))
                         .addToBackStack(""+currentCity)
                         .commit();
             }
