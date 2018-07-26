@@ -1,100 +1,93 @@
 package com.example.vatok.androidweather;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
-    private static String TAG = "MainActivity";
+public class MainActivity extends AppCompatActivity implements PublishGetter, Observer {
+    private Publisher publisher = new Publisher();
+    private Data data;
+    boolean firstTime;
 
-    EditText nameEditText;
-    AutoCompleteTextView cityAutoText;
-    Button button;
-
-    UserData userData;
-
-    BackTimer backTimer;
+    @Override
+    public Publisher getPublisher() {
+        return publisher;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nameEditText = findViewById(R.id.et_name);
-        cityAutoText = findViewById(R.id.et_city);
-        button = findViewById(R.id.button);
-
-        String[] cities = getResources().getStringArray(R.array.cities);
-        cityAutoText.setAdapter(new ArrayAdapter<String>(this,R.layout.support_simple_spinner_dropdown_item,cities));
-
-        if(getIntent().hasExtra("userData"))
+        firstTime = true;
+        publisher.subscribe(this);
+        if (savedInstanceState == null)
         {
-            userData = (UserData) getIntent().getSerializableExtra("userData");
-            nameEditText.setText(userData.getName());
-            cityAutoText.setText(userData.getCity());
+            Timber.d("onCreate first");
+            data = new Data(getResources().getStringArray(R.array.cities),  getResources().getStringArray(R.array.weatherTypes));
+            updateList(0);
+        }
+        else {
+            Timber.d("onCreate second");
+            data = (Data) savedInstanceState.getSerializable("data");
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name = nameEditText.getText().toString().trim();
-                String city = cityAutoText.getText().toString().trim();
-
-                if(name.isEmpty() || city.isEmpty())
-                {
-                    Toast.makeText(MainActivity.this, getString(R.string.toastEmptyForm), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(getCallingActivity() != null)
-                {
-                    userData.setName(name);
-                    userData.setCity(city);
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("userData", userData);
-                    setResult(Activity.RESULT_OK, resultIntent);
-                }
-                else {
-                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
-                    intent.putExtra("userData", new UserData(name, city));
-                    startActivity(intent);
-                }
-                finish();
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(BackTimer.isBackPressed()==false){
-            Toast.makeText(this, getString(R.string.toastBackText), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        super.onBackPressed();
+        data.setMasterDetail(findViewById(R.id.fl_detail) != null);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
+        Timber.d("onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
-        userData = (UserData) savedInstanceState.getSerializable("userData");
+        data = (Data) savedInstanceState.getSerializable("data");
+        publisher.notify( savedInstanceState.getInt("currentCity") );
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("userData",userData);
+        Timber.d("onSaveInstanceState");
+        outState.putSerializable("data", data);
+        outState.putInt("currentCity", publisher.getCurrentCity());
+    }
+
+
+    @Override
+    public void updateList(int currentCity) {
+        Timber.d("updateList");
+
+        data.setCurrentCityId(currentCity);
+
+        if(data.getName() == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_start, AuthFragment.newInstance(data))
+                    .commit();
+            return;
+        }
+
+        if(data.isMasterDetail()) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_detail, DetailsFragment.newInstance(data))
+                    .replace(R.id.fl_master, CitiesFragment.newInstance(currentCity, data))
+                    .addToBackStack(""+currentCity)
+                    .commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_master, CitiesFragment.newInstance(currentCity, data))
+                    .addToBackStack(""+currentCity)
+                    .commit();
+
+            if(!firstTime) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fl_master, DetailsFragment.newInstance(data))
+                        .addToBackStack(""+currentCity)
+                        .commit();
+            }
+            firstTime = false;
+        }
+
     }
 }

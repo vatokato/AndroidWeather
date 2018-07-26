@@ -17,6 +17,7 @@
     <string name="nameFieldHint">Name</string>
     <string name="edit">Edit</string>
     <string name="Submit">OK</string>
+    <string name="empty">empty</string>
 
     <string name="toastEmptyForm">Please fill all fields</string>
     <string name="toastBackText">Press again for exit</string>

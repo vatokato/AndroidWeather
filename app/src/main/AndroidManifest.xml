@@ -11,41 +11,15 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WeatherActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <!-- <a href="weather://link/?city=Moscow">Moscow</a>            -->
-                <data
-                    android:host="link"
-                    android:scheme="weather" />
 
-                <!--  <a href="http://myweather.ru/link/?city=Yekaterinburg">Yekat</a> -->
-                <data
-                    android:scheme="http"
-                    android:host="www.myweather.ru"
-                    android:path="/link"
-                    android:pathPattern=".*" />
 
-                <data
-                    android:scheme="http"
-                    android:host="myweather.ru"
-                    android:path="/link"
-                    android:pathPattern=".*" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="com.example.vatok.androidweather.WEATHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@
     <string name="nameFieldHint">Имя</string>
     <string name="edit">Редактировать</string>
     <string name="Submit">Отправить</string>
+    <string name="empty">Пусто</string>
 
 
     <string name="toastEmptyForm">Пожалуйста заполните все поля</string>
