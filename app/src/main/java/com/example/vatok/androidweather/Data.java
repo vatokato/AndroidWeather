@@ -11,6 +11,11 @@ import timber.log.Timber;
 
 public class Data implements Serializable {
     private String name;
+    private boolean showType;
+    private boolean showWind;
+    private boolean showPressure;
+    private boolean showHumidity;
+
     private String[] cities;
     private ArrayList<CityInfo> cityInfoArrayList;
     private boolean isMasterDetail;
@@ -19,6 +24,12 @@ public class Data implements Serializable {
     public Data(String[] cities, String[] weatherTypes) {
         cityInfoArrayList = new ArrayList<>();
         this.cities = cities;
+
+
+        showType=true;
+        showWind=false;
+        showPressure=false;
+        showHumidity=false;
 
         for (int i = 0; i < cities.length; i++) {
             cityInfoArrayList.add(new CityInfo(
@@ -75,5 +86,37 @@ public class Data implements Serializable {
 
     public void setCurrentCityId(int currentCityId) {
         this.currentCityId = currentCityId;
+    }
+
+    public boolean isShowType() {
+        return showType;
+    }
+
+    public void setShowType(boolean showType) {
+        this.showType = showType;
+    }
+
+    public boolean isShowWind() {
+        return showWind;
+    }
+
+    public void setShowWind(boolean showWind) {
+        this.showWind = showWind;
+    }
+
+    public boolean isShowPressure() {
+        return showPressure;
+    }
+
+    public void setShowPressure(boolean showPressure) {
+        this.showPressure = showPressure;
+    }
+
+    public boolean isShowHumidity() {
+        return showHumidity;
+    }
+
+    public void setShowHumidity(boolean showHumidity) {
+        this.showHumidity = showHumidity;
     }
 }
