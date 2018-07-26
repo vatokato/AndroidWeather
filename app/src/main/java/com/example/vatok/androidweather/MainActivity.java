@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import io.paperdb.Paper;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements PublishGetter, Observer {
@@ -69,12 +70,15 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         publisher.subscribe(this);
         if (savedInstanceState == null)
         {
-            data = new Data(getResources().getStringArray(R.array.cities),  getResources().getStringArray(R.array.weatherTypes));
+
+            if((data = (Data) Paper.book().read("data") )==null) {
+                data = new Data(getResources().getStringArray(R.array.cities),  getResources().getStringArray(R.array.weatherTypes));
+            }
             updateList(0);
 
         }
         else {
-            data = (Data) savedInstanceState.getSerializable("data");
+            data = (Data) Paper.book().read("data");
         }
 
 
@@ -119,8 +123,9 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
     {
         Timber.d("onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState);
-        data = (Data) savedInstanceState.getSerializable("data");
-        publisher.notify( savedInstanceState.getInt("currentCity") );
+        data = (Data) Paper.book().read("data");
+        int position =  Paper.book().read("currentCity");
+        publisher.notify( position );
     }
 
     @Override
@@ -128,8 +133,9 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
     {
         super.onSaveInstanceState(outState);
         Timber.d("onSaveInstanceState");
-        outState.putSerializable("data", data);
-        outState.putInt("currentCity", publisher.getCurrentCity());
+
+        Paper.book().write("data", data);
+        Paper.book().write("currentCity", publisher.getCurrentCity());
     }
 
 

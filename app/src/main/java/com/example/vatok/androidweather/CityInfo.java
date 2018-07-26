@@ -2,17 +2,24 @@ package com.example.vatok.androidweather;
 
 import android.graphics.Color;
 import java.io.Serializable;
+import java.util.Random;
 
 public class CityInfo implements Serializable {
     private String name;
     private int temperature;
     private int temperatureColor;
     private String type;
+    private int wind;
+    private int pressure;
+    private int humidity;
 
-    public CityInfo(String name, int temperature, String type) {
+    public CityInfo(String name, String[] types) {
         this.name = name;
-        this.temperature = temperature;
-        this.type = type;
+        this.temperature = new Random().nextInt(70)-30;
+        this.type = types[new Random().nextInt(types.length)];
+        this.wind = new Random().nextInt(30);
+        this.pressure = new Random().nextInt(100)+700;
+        this.humidity = new Random().nextInt(80)+20;
 
         int red = 0, green = 0, blue = 0;
         if(this.temperature>24) {
@@ -58,4 +65,17 @@ public class CityInfo implements Serializable {
     public int getTemperatureColor() {
         return temperatureColor;
     }
+
+    public String getWind() {
+        return String.format("%s %s", wind, "м/c");
+    }
+
+    public String getPressure() {
+        return String.format("%s %s", pressure, "мм.рт.ст.");
+    }
+
+    public String getHumidity() {
+        return String.format("%s %s", humidity, "%");
+    }
+
 }

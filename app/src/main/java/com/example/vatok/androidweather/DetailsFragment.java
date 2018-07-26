@@ -23,8 +23,13 @@ public class DetailsFragment extends Fragment
     }
 
     TextView temperatureTextVeiw;
-    TextView typeTextVeiw;
     TextView cityTextVeiw;
+
+    TextView typeTextVeiw;
+    TextView windTextVeiw;
+    TextView pressureTextVeiw;
+    TextView humidityTextVeiw;
+
     Data data;
     Publisher publisher;
 
@@ -41,24 +46,40 @@ public class DetailsFragment extends Fragment
     {
         Timber.d("onCreateView Details");
 
-        System.out.println(getArguments());
-
         data = (Data) getArguments().getSerializable("data");
         data.setCurrentCityId( getArguments().getInt("currentCity") );
 
         View view = inflater.inflate(R.layout.fragment_details, null);
         temperatureTextVeiw = view.findViewById(R.id.tv_temperature);
         typeTextVeiw = view.findViewById(R.id.tv_type);
+        windTextVeiw = view.findViewById(R.id.tv_wind);
+        pressureTextVeiw = view.findViewById(R.id.tv_pressure);
+        humidityTextVeiw = view.findViewById(R.id.tv_humidity);
 
         CityInfo cityInfo = data.getInfo();
         temperatureTextVeiw.setText(""+cityInfo.getTemperatureString());
         temperatureTextVeiw.setTextColor(cityInfo.getTemperatureColor());
-        typeTextVeiw.setText(""+cityInfo.getType());
+
 
         cityTextVeiw = view.findViewById(R.id.tv_city);
         if(cityTextVeiw!=null) {
             cityTextVeiw.setText(cityInfo.getName());
         }
+
+        if(data.isShowType()) {
+            typeTextVeiw.setText(cityInfo.getType());
+        }
+        if(data.isShowWind()) {
+            windTextVeiw.setText(cityInfo.getWind());
+        }
+        if(data.isShowPressure()) {
+            pressureTextVeiw.setText(cityInfo.getPressure());
+        }
+        if(data.isShowHumidity()) {
+            humidityTextVeiw.setText(cityInfo.getHumidity());
+        }
+
+
 
         return view;
     }

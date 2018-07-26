@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import io.paperdb.Paper;
 import timber.log.Timber;
 
 public class AuthFragment extends Fragment
@@ -45,6 +46,10 @@ public class AuthFragment extends Fragment
 
         nameEditText = view.findViewById(R.id.et_name);
         okButton = view.findViewById(R.id.btn_ok);
+
+        if(data.getName()!=null) {
+            nameEditText.setText( data.getName() );
+        }
 
         okButton.setOnClickListener(new View.OnClickListener()
         {

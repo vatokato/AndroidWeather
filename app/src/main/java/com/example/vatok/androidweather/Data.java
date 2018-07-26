@@ -34,8 +34,8 @@ public class Data implements Serializable {
         for (int i = 0; i < cities.length; i++) {
             cityInfoArrayList.add(new CityInfo(
                     cities[i],
-                    new Random().nextInt(70)-30,
-                    weatherTypes[new Random().nextInt(weatherTypes.length)])
+                    weatherTypes
+                    )
             );
         }
     }
