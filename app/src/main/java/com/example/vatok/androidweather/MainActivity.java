@@ -17,12 +17,7 @@ public class MainActivity extends AppCompatActivity {
     CitiesFragment.OnCitySelectedListener citySelectedListener = new CitiesFragment.OnCitySelectedListener() {
         @Override
         public void onCitySelected(int position) {
-            data.setCurrentCityId(position);
-            Timber.d(""+position);
-            citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data);
-            citiesFragment.setCitySelectedListener(citySelectedListener);
-            detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data);
-            updateFragments();
+            updateFragments(position);
         }
     };
     boolean isLandscape;
@@ -67,10 +62,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //фрагменты городов
-        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data);
-        citiesFragment.setCitySelectedListener(citySelectedListener);
-        detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data);
-        updateFragments();
+        updateFragments(data.getCurrentCityId());
 
         //фрагмент настроек
         settingsButton.setOnClickListener(new View.OnClickListener()
@@ -117,35 +109,38 @@ public class MainActivity extends AppCompatActivity {
         Paper.book().write("currentCityId", data.getCurrentCityId());
     }
 
-    public void updateFragments() {
+    public void updateFragments(int position) {
+        data.setCurrentCityId(position);
 
-        if(getSupportFragmentManager().findFragmentById(R.id.fl_master)==null) {
-            if(isLandscape) {
+        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data, position);
+        citiesFragment.setCitySelectedListener(citySelectedListener);
+        detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data);
+
+
+        if(isLandscape) {
+            if(getSupportFragmentManager().findFragmentById(R.id.fl_master)==null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
                         .replace(R.id.fl_detail, detailsFragment)
                         .commit();
             }
             else {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_master, citiesFragment)
-                        .commit();
-            }
-        }
-        else {
-            if(getSupportFragmentManager().findFragmentById(R.id.fl_master) instanceof DetailsFragment) {
-                getSupportFragmentManager().popBackStack();
-            }
-            if(isLandscape) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
                         .replace(R.id.fl_detail, detailsFragment)
                         .addToBackStack(""+data.getCurrentCityId())
                         .commit();
             }
+        }
+        else {
+            if(getSupportFragmentManager().findFragmentById(R.id.fl_master)==null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fl_master, citiesFragment)
+                        .commit();
+            }
             else {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fl_master, detailsFragment)
+                        .replace(R.id.fl_master, detailsFragment)
                         .addToBackStack(""+data.getCurrentCityId())
                         .commit();
             }
