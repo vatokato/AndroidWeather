@@ -29,9 +29,7 @@ public class DetailsFragment extends Fragment
     TextView windTextVeiw;
     TextView pressureTextVeiw;
     TextView humidityTextVeiw;
-
     Data data;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -46,7 +44,6 @@ public class DetailsFragment extends Fragment
         pressureTextVeiw = view.findViewById(R.id.tv_pressure);
         humidityTextVeiw = view.findViewById(R.id.tv_humidity);
 
-        Timber.d( data.getCurrentCityId() + "");
         if(data.getCurrentCityId()<0)
             return view;
 

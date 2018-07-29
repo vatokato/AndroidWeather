@@ -1,6 +1,8 @@
 package com.example.vatok.androidweather;
 
+import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,20 +12,25 @@ import android.widget.ImageView;
 import io.paperdb.Paper;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
-    CitiesFragment citiesFragment;
-    DetailsFragment detailsFragment;
-
+public class MainActivity extends AppCompatActivity implements DataGetter {
     CitiesFragment.OnCitySelectedListener citySelectedListener = new CitiesFragment.OnCitySelectedListener() {
         @Override
         public void onCitySelected(int position) {
             updateFragments(position);
         }
     };
-    boolean isLandscape;
     private Data data;
     Toolbar toolbar;
     ImageView settingsButton;
+    boolean firstTime;
+    CitiesFragment citiesFragment;
+    DetailsFragment detailsFragment;
+    SettingsFragment settingsFragment;
+
+    @Override
+    public Data getData() {
+        return data;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        isLandscape = findViewById(R.id.fl_detail) != null;
         settingsButton = findViewById(R.id.iv_settings);
 
         // если мы из авторизации и в интенте есть имя - инициализируем дату
@@ -52,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             data=(Data) Paper.book().read("data");
         }
-
         //если инфы нет, значит запускаем авторизацию
         if (data==null) {
             Intent intent = new Intent(MainActivity.this, AuthActivity.class);
@@ -61,10 +66,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        //фрагменты городов
-        updateFragments(data.getCurrentCityId());
+        firstTime = true;
+        if(savedInstanceState==null){
+            updateFragments(data.getCurrentCityId());
+        }
 
         //фрагмент настроек
+        settingsFragment =(SettingsFragment) SettingsFragment.newInstance(data);
         settingsButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -76,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_settings, SettingsFragment.newInstance(data))
+                        .replace(R.id.fl_settings, settingsFragment)
                         .addToBackStack("settings")
                         .commit();
             }
@@ -99,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         data = Paper.book().read("data");
         data.setCurrentCityId((int) Paper.book().read("currentCityId") );
+        updateFragments(data.getCurrentCityId());
     }
 
     @Override
@@ -111,14 +120,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateFragments(int position) {
         data.setCurrentCityId(position);
+        data.setMasterDetail( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE );
 
-        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data, position);
+        //фрагменты городов
+        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data);
         citiesFragment.setCitySelectedListener(citySelectedListener);
         detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data);
 
-
-        if(isLandscape) {
-            if(getSupportFragmentManager().findFragmentById(R.id.fl_master)==null) {
+        if(firstTime) {
+            if(data.isMasterDetail()) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
                         .replace(R.id.fl_detail, detailsFragment)
@@ -127,21 +137,22 @@ public class MainActivity extends AppCompatActivity {
             else {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
-                        .replace(R.id.fl_detail, detailsFragment)
-                        .addToBackStack(""+data.getCurrentCityId())
                         .commit();
             }
+            firstTime = false;
         }
         else {
-            if(getSupportFragmentManager().findFragmentById(R.id.fl_master)==null) {
+            if(data.isMasterDetail()) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
+                        .replace(R.id.fl_detail, detailsFragment)
+                        .addToBackStack(""+position)
                         .commit();
             }
             else {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_master, detailsFragment)
-                        .addToBackStack(""+data.getCurrentCityId())
+                        .replace(R.id.fl_detail, detailsFragment)
+                        .addToBackStack(""+position)
                         .commit();
             }
         }

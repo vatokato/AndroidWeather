@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import timber.log.Timber;
 
 public class CitiesFragment extends ListFragment
 {
@@ -19,14 +18,13 @@ public class CitiesFragment extends ListFragment
     }
 
     Data data;
-    int currentCityId;
 
-    public static Fragment newInstance(Data data, int currentCityId)
+    public static Fragment newInstance(Data data)
     {
         CitiesFragment fragment = new CitiesFragment();
         Bundle args = new Bundle();
         args.putSerializable("data", data);
-        args.putInt("currentCity", currentCityId); // сохраняем интовый выбранный город для бекстека
+        args.putInt("currentCity", data.getCurrentCityId()); // сохраняем интовый выбранный город для бекстека
         fragment.setArguments(args);
         return fragment;
     }
@@ -35,9 +33,7 @@ public class CitiesFragment extends ListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         data = (Data) getArguments().getSerializable("data");
-
-        currentCityId = getArguments().getInt("currentCity");
-        data.setCurrentCityId(currentCityId);
+        data.setCurrentCityId(getArguments().getInt("currentCity"));
 
         View view = inflater.inflate(R.layout.fragment_cities, null);
         ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_activated_1);
@@ -49,9 +45,7 @@ public class CitiesFragment extends ListFragment
     @Override
     public void onResume() {
         super.onResume();
-        Timber.d(currentCityId+"");
-//        if(currentCityId>=0 && getActivity().findViewById(R.id.fl_detail)!=null) {
-        if(currentCityId>=0) {
+        if(data.getCurrentCityId()>=0 && data.isMasterDetail()) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             getListView().setItemChecked(data.getCurrentCityId(), true);
         }

@@ -40,6 +40,7 @@ public class SettingsFragment extends Fragment {
         humiditySwitch= view.findViewById(R.id.sw_humidity);
 
         data = (Data) getArguments().getSerializable("data");
+
         String name = data.getName() != null ? data.getName() : "";
         nameEditText.setText(name);
         typeSwitch.setChecked(data.isShowType());
