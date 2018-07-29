@@ -79,8 +79,6 @@ public class DetailsFragment extends Fragment
             humidityTextVeiw.setText(cityInfo.getHumidity());
         }
 
-
-
         return view;
     }
 }

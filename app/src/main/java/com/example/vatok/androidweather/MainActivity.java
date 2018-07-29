@@ -1,5 +1,7 @@
 package com.example.vatok.androidweather;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -22,10 +24,12 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         SETTINGS("settings"),
         UNKNOWN("unknown");
         String id;
+
         Mode(String id)
         {
             this.id = id;
         }
+
         public static Mode byId(String id)
         {
             for (Mode mode : Mode.values())
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
     }
 
     Mode mode = Mode.AUTH;
+    boolean isLandscape;
 
     AppCompatActivity that;
     private Publisher publisher = new Publisher();
@@ -64,21 +69,31 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        settingsButton = findViewById(R.id.iv_settings);
+        isLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
+        settingsButton = findViewById(R.id.iv_settings);
         firstTime = true;
         publisher.subscribe(this);
-        if (savedInstanceState == null)
-        {
 
-            if((data = (Data) Paper.book().read("data") )==null) {
-                data = new Data(getResources().getStringArray(R.array.cities),  getResources().getStringArray(R.array.weatherTypes));
-            }
-            updateList(0);
-
+        // если мы из авторизации и в интенте есть имя - инициализируем дату
+        if(getIntent().hasExtra("name")) {
+            data = new Data(
+                    getIntent().getStringExtra("name"),
+                    getResources().getStringArray(R.array.cities),
+                    getResources().getStringArray(R.array.weatherTypes)
+            );
+            Paper.book().write("data", data);
         }
-        else {
-            data = (Data) Paper.book().read("data");
+
+        data=(Data) Paper.book().read("data");
+        if (data==null) {
+            Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+            startActivity( intent );
+            finish();
+        }
+
+        if (savedInstanceState == null) {
+            updateList(0);
         }
 
 
@@ -98,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
                         .replace(R.id.fl_master, SettingsFragment.newInstance(data))
                         .addToBackStack("settings")
                         .commit();
-
             }
         });
 
@@ -125,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         super.onRestoreInstanceState(savedInstanceState);
         data = (Data) Paper.book().read("data");
         int position =  Paper.book().read("currentCity");
-        publisher.notify( position );
+
+        updateList(position);
     }
 
     @Override
@@ -144,17 +159,8 @@ public class MainActivity extends AppCompatActivity implements PublishGetter, Ob
         Timber.d("updateList");
 
         data.setCurrentCityId(currentCity);
-        data.setMasterDetail(findViewById(R.id.fl_detail) != null);
 
-        if(data.getName() == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_start, AuthFragment.newInstance(data))
-                    .commit();
-            return;
-        }
-
-        if(data.isMasterDetail()) {
-
+        if(isLandscape) {
             // если мы на альбомной, а мастере лежит артефакт от портрета делаем шаг назад
             if(getSupportFragmentManager().findFragmentById(R.id.fl_master) instanceof DetailsFragment)
             {

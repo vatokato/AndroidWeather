@@ -21,15 +21,16 @@ public class Data implements Serializable {
     private boolean isMasterDetail;
     private int currentCityId;
 
-    public Data(String[] cities, String[] weatherTypes) {
-        cityInfoArrayList = new ArrayList<>();
+
+    public Data(String name, String[] cities, String[] weatherTypes) {
+        this.name = name;
+        this.cityInfoArrayList = new ArrayList<>();
         this.cities = cities;
 
-
-        showType=true;
-        showWind=false;
-        showPressure=false;
-        showHumidity=false;
+        this.showType=true;
+        this.showWind=false;
+        this.showPressure=false;
+        this.showHumidity=false;
 
         for (int i = 0; i < cities.length; i++) {
             cityInfoArrayList.add(new CityInfo(

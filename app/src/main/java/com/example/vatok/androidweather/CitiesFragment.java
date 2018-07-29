@@ -52,10 +52,10 @@ public class CitiesFragment extends ListFragment
     @Override
     public void onResume() {
         super.onResume();
-        if(data.isMasterDetail()) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            getListView().setItemChecked(data.getCurrentCityId(), true);
-        }
+
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setItemChecked(data.getCurrentCityId(), true);
+
     }
 
     @Override

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weather </string>
+    <string name="app_name">Weather</string>
     <string name="greeting">Hello World!</string>
 
     <string name="greeter">User</string>
@@ -21,4 +21,10 @@
 
     <string name="toastEmptyForm">Please fill all fields</string>
     <string name="toastBackText">Press again for exit</string>
+
+    <string name="name">Name</string>
+    <string name="type">Type</string>
+    <string name="wind">Wind</string>
+    <string name="pressure">Pressure</string>
+    <string name="humidity">Humidity</string>
 </resources>

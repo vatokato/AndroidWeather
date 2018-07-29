@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.paperdb.Paper;
 import timber.log.Timber;
 
 public class AuthFragment extends Fragment
@@ -40,7 +39,7 @@ public class AuthFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_auth, null);
+        View view = inflater.inflate(R.layout.activity_auth, null);
         data = (Data) getArguments().getSerializable("data");
         self = this;
 
