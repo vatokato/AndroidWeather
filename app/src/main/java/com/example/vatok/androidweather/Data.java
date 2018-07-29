@@ -26,6 +26,7 @@ public class Data implements Serializable {
         this.name = name;
         this.cityInfoArrayList = new ArrayList<>();
         this.cities = cities;
+        this.currentCityId = -1;
 
         this.showType=true;
         this.showWind=false;
@@ -60,7 +61,6 @@ public class Data implements Serializable {
     public String[] getCities() {
         return cities;
     }
-
 
     public void setCityInfoArrayList(ArrayList<CityInfo> cityInfoArrayList) {
         this.cityInfoArrayList = cityInfoArrayList;

@@ -57,5 +57,14 @@
         android:layout_marginTop="?attr/actionBarSize"
         />
 
+    <FrameLayout
+        android:id="@+id/fl_settings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        />
+
 
 </android.support.constraint.ConstraintLayout>

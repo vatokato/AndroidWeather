@@ -1,8 +1,6 @@
 package com.example.vatok.androidweather;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -15,15 +13,20 @@ import timber.log.Timber;
 
 public class CitiesFragment extends ListFragment
 {
-    Publisher publisher;
+    OnCitySelectedListener citySelectedListener;
+    public interface OnCitySelectedListener
+    {
+        void onCitySelected(int position);
+    }
+
     Data data;
 
-    public static Fragment newInstance(int currentCity, Data data)
+    public static Fragment newInstance(Data data)
     {
         CitiesFragment fragment = new CitiesFragment();
         Bundle args = new Bundle();
-        args.putInt("currentCity", currentCity);
         args.putSerializable("data", data);
+        args.putInt("currentCity", data.getCurrentCityId()); // сохраняем интовый выбранный город для бекстека
         fragment.setArguments(args);
         return fragment;
     }
@@ -31,9 +34,9 @@ public class CitiesFragment extends ListFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Timber.d("onCreateView");
         data = (Data) getArguments().getSerializable("data");
         data.setCurrentCityId( getArguments().getInt("currentCity") );
+
         View view = inflater.inflate(R.layout.fragment_cities, null);
         ArrayAdapter<String> adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_activated_1);
         adapter.addAll(data.getCities());
@@ -42,32 +45,28 @@ public class CitiesFragment extends ListFragment
     }
 
     @Override
-    public void onAttach(Context context)
-    {
-        Timber.d("onAttach");
-        super.onAttach(context);
-        publisher = ((PublishGetter) context).getPublisher();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        getListView().setItemChecked(data.getCurrentCityId(), true);
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        System.out.println("resume");
+        if(data.getCurrentCityId()>=0) {
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            getListView().setItemChecked(data.getCurrentCityId(), true);
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         super.onListItemClick(l, v, position, id);
-        publisher.notify(position);
+        if(citySelectedListener != null)
+        {
+            citySelectedListener.onCitySelected(position);
+        }
+    }
+
+    public void setCitySelectedListener(OnCitySelectedListener citySelectedListener)
+    {
+        this.citySelectedListener = citySelectedListener;
     }
 
 }

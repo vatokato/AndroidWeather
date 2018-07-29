@@ -12,11 +12,11 @@ import timber.log.Timber;
 
 public class DetailsFragment extends Fragment
 {
-    public static Fragment newInstance(int currentCity, Data data)
+    public static Fragment newInstance(Data data)
     {
         DetailsFragment fragment = new DetailsFragment();
         Bundle args = new Bundle();
-        args.putInt("currentCity", currentCity);
+        args.putInt("currentCity", data.getCurrentCityId());
         args.putSerializable("data", data);
         fragment.setArguments(args);
         return fragment;
@@ -31,21 +31,11 @@ public class DetailsFragment extends Fragment
     TextView humidityTextVeiw;
 
     Data data;
-    Publisher publisher;
 
-    @Override
-    public void onAttach(Context context)
-    {
-        Timber.d("onAttach");
-        super.onAttach(context);
-        publisher = ((PublishGetter) context).getPublisher();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Timber.d("onCreateView Details");
-
         data = (Data) getArguments().getSerializable("data");
         data.setCurrentCityId( getArguments().getInt("currentCity") );
 
@@ -56,10 +46,13 @@ public class DetailsFragment extends Fragment
         pressureTextVeiw = view.findViewById(R.id.tv_pressure);
         humidityTextVeiw = view.findViewById(R.id.tv_humidity);
 
+        Timber.d( data.getCurrentCityId() + "");
+        if(data.getCurrentCityId()<0)
+            return view;
+
         CityInfo cityInfo = data.getInfo();
         temperatureTextVeiw.setText(""+cityInfo.getTemperatureString());
         temperatureTextVeiw.setTextColor(cityInfo.getTemperatureColor());
-
 
         cityTextVeiw = view.findViewById(R.id.tv_city);
         if(cityTextVeiw!=null) {
