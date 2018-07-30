@@ -5,6 +5,8 @@
         <item>дождь</item>
         <item>туман</item>
     </string-array>
+
+
     <string-array name="cities">
         <item>Москва</item>
         <item>Екатеринбург</item>
