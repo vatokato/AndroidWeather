@@ -1,16 +1,16 @@
 package com.example.vatok.androidweather;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+
 import io.paperdb.Paper;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements DataGetter {
     CitiesFragment.OnCitySelectedListener citySelectedListener = new CitiesFragment.OnCitySelectedListener() {
@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
     boolean firstTime;
     CitiesFragment citiesFragment;
     DetailsFragment detailsFragment;
-    SettingsFragment settingsFragment;
 
     @Override
     public Data getData() {
@@ -47,11 +46,7 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
 
         // если мы из авторизации и в интенте есть имя - инициализируем дату
         if(getIntent().hasExtra("name")) {
-            data = new Data(
-                    getIntent().getStringExtra("name"),
-                    getResources().getStringArray(R.array.cities),
-                    getResources().getStringArray(R.array.weatherTypes)
-            );
+            data = new Data(getIntent().getStringExtra("name"), this);
             Paper.book().write("data", data);
         }
         // иначе пытаемся получить из базы
@@ -72,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         }
 
         //фрагмент настроек
-        settingsFragment =(SettingsFragment) SettingsFragment.newInstance(data);
         settingsButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -84,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
                     return;
                 }
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_settings, settingsFragment)
+                        .replace(R.id.fl_settings, SettingsFragment.newInstance())
                         .addToBackStack("settings")
                         .commit();
             }
@@ -123,9 +117,9 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         data.setMasterDetail( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE );
 
         //фрагменты городов
-        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(data);
+        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(position);
         citiesFragment.setCitySelectedListener(citySelectedListener);
-        detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data);
+        detailsFragment = (DetailsFragment) DetailsFragment.newInstance(position);
 
         if(firstTime) {
             if(data.isMasterDetail()) {
@@ -135,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
                         .commit();
             }
             else {
+                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.fl_detail);
+                if(fr!=null) {
+                    getSupportFragmentManager().beginTransaction()
+                            .remove(fr)
+                            .commit();
+                }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fl_master, citiesFragment)
                         .commit();
@@ -142,19 +142,11 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
             firstTime = false;
         }
         else {
-            if(data.isMasterDetail()) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_master, citiesFragment)
-                        .replace(R.id.fl_detail, detailsFragment)
-                        .addToBackStack(""+position)
-                        .commit();
-            }
-            else {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_detail, detailsFragment)
-                        .addToBackStack(""+position)
-                        .commit();
-            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_master, citiesFragment)
+                    .replace(R.id.fl_detail, detailsFragment)
+                    .addToBackStack(""+position)
+                    .commit();
         }
     }
 }

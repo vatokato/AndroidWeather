@@ -1,27 +1,27 @@
 package com.example.vatok.androidweather;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import timber.log.Timber;
+import com.bumptech.glide.Glide;
 
 public class DetailsFragment extends Fragment
 {
-    public static Fragment newInstance(Data data)
+    public static Fragment newInstance(int position)
     {
         DetailsFragment fragment = new DetailsFragment();
         Bundle args = new Bundle();
-        args.putInt("currentCity", data.getCurrentCityId());
-        args.putSerializable("data", data);
+        args.putInt("position", position);
         fragment.setArguments(args);
         return fragment;
     }
 
+    ImageView logoImageView;
     TextView temperatureTextVeiw;
     TextView cityTextVeiw;
 
@@ -34,10 +34,11 @@ public class DetailsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        data = (Data) getArguments().getSerializable("data");
-        data.setCurrentCityId( getArguments().getInt("currentCity") );
+        data = ((DataGetter) getActivity()).getData();
+        data.setCurrentCityId( getArguments().getInt("position") );
 
         View view = inflater.inflate(R.layout.fragment_details, null);
+        logoImageView = view.findViewById(R.id.iv_image);
         temperatureTextVeiw = view.findViewById(R.id.tv_temperature);
         typeTextVeiw = view.findViewById(R.id.tv_type);
         windTextVeiw = view.findViewById(R.id.tv_wind);
@@ -53,7 +54,7 @@ public class DetailsFragment extends Fragment
 
         cityTextVeiw = view.findViewById(R.id.tv_city);
         if(cityTextVeiw!=null) {
-            cityTextVeiw.setText(cityInfo.getName());
+            cityTextVeiw.setText(cityInfo.getTitle());
         }
 
         if(data.isShowType()) {
@@ -68,6 +69,16 @@ public class DetailsFragment extends Fragment
         if(data.isShowHumidity()) {
             humidityTextVeiw.setText(cityInfo.getHumidity());
         }
+
+        if(data.isShowLogo()) {
+            humidityTextVeiw.setText(cityInfo.getHumidity());
+
+            Glide.with(view.getContext())
+                    .load(cityInfo.getImageUrl())
+                    .into(logoImageView);
+        }
+
+
 
         return view;
     }

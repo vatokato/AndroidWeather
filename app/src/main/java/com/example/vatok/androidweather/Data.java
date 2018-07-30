@@ -1,12 +1,10 @@
 package com.example.vatok.androidweather;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.List;
 
+import io.paperdb.Paper;
 import timber.log.Timber;
 
 public class Data implements Serializable {
@@ -15,30 +13,40 @@ public class Data implements Serializable {
     private boolean showWind;
     private boolean showPressure;
     private boolean showHumidity;
+    private boolean showLogo;
 
     private String[] cities;
-    private ArrayList<CityInfo> cityInfoArrayList;
+    private List<CityInfo> cityInfoArrayList;
     private boolean isMasterDetail;
     private int currentCityId;
 
 
-    public Data(String name, String[] cities, String[] weatherTypes) {
+    public Data(String name, MainActivity context) {
         this.name = name;
         this.cityInfoArrayList = new ArrayList<>();
-        this.cities = cities;
+        this.cities = context.getResources().getStringArray(R.array.cities);
         this.currentCityId = -1;
 
         this.showType=true;
         this.showWind=false;
         this.showPressure=false;
         this.showHumidity=false;
+        this.showLogo=true;
 
-        for (int i = 0; i < cities.length; i++) {
-            cityInfoArrayList.add(new CityInfo(
-                    cities[i],
-                    weatherTypes
-                    )
-            );
+        Timber.d("gen");
+
+        if(Paper.book().contains("dataRV"))
+        {
+            cityInfoArrayList = Paper.book().read("dataRV");
+        }
+        else {
+            for (int i = 0; i < cities.length; i++) {
+                cityInfoArrayList.add(new CityInfo(
+                                i,
+                                context
+                        )
+                );
+            }
         }
     }
 
@@ -66,7 +74,7 @@ public class Data implements Serializable {
         this.cityInfoArrayList = cityInfoArrayList;
     }
 
-    public ArrayList<CityInfo> getCityInfoArrayList() {
+    public List<CityInfo> getCityInfoArrayList() {
         return cityInfoArrayList;
     }
 
@@ -120,4 +128,18 @@ public class Data implements Serializable {
     public void setShowHumidity(boolean showHumidity) {
         this.showHumidity = showHumidity;
     }
+
+    public boolean isShowLogo() {
+        return showLogo;
+    }
+
+    public void setShowLogo(boolean showLogo) {
+        this.showLogo = showLogo;
+    }
+
+    public static void saveData(List<CityInfo> items)
+    {
+        Paper.book().write("dataRV", items);
+    }
+
 }
