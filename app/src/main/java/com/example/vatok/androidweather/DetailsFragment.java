@@ -1,6 +1,8 @@
 package com.example.vatok.androidweather;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,18 @@ public class DetailsFragment extends Fragment
         return fragment;
     }
 
+    OnFavoriteClickListener favoriteClickListener;
+    public interface OnFavoriteClickListener
+    {
+        void onFavoriteClick(ImageView context, CityInfo cityInfo);
+    }
+    public void setFavoriteClickListener(OnFavoriteClickListener citySelectedListener)
+    {
+        this.favoriteClickListener = citySelectedListener;
+    }
+
     ImageView logoImageView;
+    ImageView favoriteImageVeiw;
     TextView temperatureTextVeiw;
     TextView cityTextVeiw;
 
@@ -31,6 +44,7 @@ public class DetailsFragment extends Fragment
     TextView humidityTextVeiw;
     Data data;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -39,6 +53,7 @@ public class DetailsFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_details, null);
         logoImageView = view.findViewById(R.id.iv_image);
+        favoriteImageVeiw = view.findViewById(R.id.iv_favor);
         temperatureTextVeiw = view.findViewById(R.id.tv_temperature);
         typeTextVeiw = view.findViewById(R.id.tv_type);
         windTextVeiw = view.findViewById(R.id.tv_wind);
@@ -48,7 +63,23 @@ public class DetailsFragment extends Fragment
         if(data.getCurrentCityId()<0)
             return view;
 
-        CityInfo cityInfo = data.getInfo();
+        final CityInfo cityInfo = data.getInfo();
+
+        if(cityInfo.isFavorite()) {
+            favoriteImageVeiw.setImageResource(R.drawable.ic_star_black_24dp);
+        }
+        else {
+            favoriteImageVeiw.setImageResource(R.drawable.ic_star_border_black_24dp);
+        }
+        favoriteImageVeiw.getDrawable().setTint(view.getResources().getColor(R.color.colorAccent2));
+        favoriteImageVeiw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(favoriteClickListener!= null) {
+                    favoriteClickListener.onFavoriteClick(favoriteImageVeiw, cityInfo);
+                }
+            }
+        });
         temperatureTextVeiw.setText(""+cityInfo.getTemperatureString());
         temperatureTextVeiw.setTextColor(cityInfo.getTemperatureColor());
 

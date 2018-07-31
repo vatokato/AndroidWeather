@@ -7,6 +7,7 @@ import java.util.Random;
 
 public class CityInfo implements Serializable {
     private String title;
+    private int id;
     private int temperature;
     private int temperatureColor;
     private String type;
@@ -19,6 +20,7 @@ public class CityInfo implements Serializable {
 
     public CityInfo(int position, MainActivity context) {
         String[] cities = context.getResources().getStringArray(R.array.cities);
+        this.id = position;
         this.title = cities[position];
         this.temperature = new Random().nextInt(70)-30;
         String[] types = context.getResources().getStringArray(R.array.weatherTypes);
@@ -111,5 +113,9 @@ public class CityInfo implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public int getId() {
+        return id;
     }
 }

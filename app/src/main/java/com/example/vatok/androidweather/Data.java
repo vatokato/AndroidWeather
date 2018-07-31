@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.paperdb.Paper;
-import timber.log.Timber;
 
 public class Data implements Serializable {
     private String name;
@@ -33,11 +32,10 @@ public class Data implements Serializable {
         this.showHumidity=false;
         this.showLogo=true;
 
-        Timber.d("gen");
-
         if(Paper.book().contains("dataRV"))
         {
-            cityInfoArrayList = Paper.book().read("dataRV");
+            cityInfoArrayList = this.getDataRv();
+            //cityInfoArrayList = Paper.book().read("dataRV");
         }
         else {
             for (int i = 0; i < cities.length; i++) {
@@ -47,6 +45,7 @@ public class Data implements Serializable {
                         )
                 );
             }
+            this.saveDataRv(cityInfoArrayList);
         }
     }
 
@@ -137,7 +136,12 @@ public class Data implements Serializable {
         this.showLogo = showLogo;
     }
 
-    public static void saveData(List<CityInfo> items)
+    public static List<CityInfo> getDataRv()
+    {
+        return (List<CityInfo>) Paper.book().read("dataRV");
+    }
+
+    public static void saveDataRv(List<CityInfo> items)
     {
         Paper.book().write("dataRV", items);
     }
