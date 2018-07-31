@@ -17,11 +17,11 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end|center_vertical"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/ic_settings_black_24dp"
             android:clickable="true"
             android:focusable="true"
+            android:tint="@color/colorLight"
             android:padding="10dp"/>
-
     </android.support.v7.widget.Toolbar>
 
     <FrameLayout
