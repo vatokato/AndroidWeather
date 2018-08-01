@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+
 import timber.log.Timber;
 
 public class SettingsFragment extends Fragment {
@@ -22,11 +23,11 @@ public class SettingsFragment extends Fragment {
 
     Data data;
     EditText nameEditText;
+    View settingsView;
     Switch typeSwitch;
     Switch windSwitch;
     Switch pressureSwitch;
     Switch humiditySwitch;
-    Switch logoSwitch;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -34,11 +35,11 @@ public class SettingsFragment extends Fragment {
         Timber.d("onCreateView");
         View view = inflater.inflate(R.layout.fragment_settings, null);
         nameEditText = view.findViewById(R.id.et_name);
+        settingsView = view.findViewById(R.id.v_settings);
         typeSwitch= view.findViewById(R.id.sw_type);
         windSwitch= view.findViewById(R.id.sw_wind);
         pressureSwitch= view.findViewById(R.id.sw_pressure);
         humiditySwitch= view.findViewById(R.id.sw_humidity);
-        logoSwitch= view.findViewById(R.id.sw_logo);
         return view;
     }
 
@@ -55,24 +56,30 @@ public class SettingsFragment extends Fragment {
 
         data = ((DataGetter) getActivity()).getData();
         String name = data.getName() != null ? data.getName() : "";
+
         nameEditText.setText(name);
         typeSwitch.setChecked(data.isShowType());
         windSwitch.setChecked(data.isShowWind());
         pressureSwitch.setChecked(data.isShowPressure());
         humiditySwitch.setChecked(data.isShowHumidity());
-        logoSwitch.setChecked(data.isShowLogo());
 
         typeSwitch.setOnCheckedChangeListener(new ChangeListener());
         windSwitch.setOnCheckedChangeListener(new ChangeListener());
         pressureSwitch.setOnCheckedChangeListener(new ChangeListener());
         humiditySwitch.setOnCheckedChangeListener(new ChangeListener());
-        logoSwitch.setOnCheckedChangeListener(new ChangeListener());
 
         nameEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 save();
                 return false;
+            }
+        });
+
+        settingsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
     }
@@ -90,7 +97,7 @@ public class SettingsFragment extends Fragment {
         data.setShowWind( windSwitch.isChecked() );
         data.setShowPressure( pressureSwitch.isChecked());
         data.setShowHumidity( humiditySwitch.isChecked() );
-        data.setShowLogo( logoSwitch.isChecked() );
+        data.save();
     }
 }
 

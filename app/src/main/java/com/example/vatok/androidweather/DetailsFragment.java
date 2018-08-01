@@ -1,9 +1,9 @@
 package com.example.vatok.androidweather;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,28 +23,30 @@ public class DetailsFragment extends Fragment
         return fragment;
     }
 
-    OnFavoriteClickListener favoriteClickListener;
     public interface OnFavoriteClickListener
     {
         void onFavoriteClick(ImageView context, CityInfo cityInfo);
     }
+    OnFavoriteClickListener favoriteClickListener;
+
     public void setFavoriteClickListener(OnFavoriteClickListener citySelectedListener)
     {
         this.favoriteClickListener = citySelectedListener;
     }
 
-    ImageView logoImageView;
-    ImageView favoriteImageVeiw;
-    TextView temperatureTextVeiw;
-    TextView cityTextVeiw;
+    Toolbar toolbar;
+    Data data;
 
+    ImageView logoImageView;
+    ImageView bgImageView;
+    ImageView favoriteImageVeiw;
+
+    TextView temperatureTextView;
     TextView typeTextVeiw;
     TextView windTextVeiw;
     TextView pressureTextVeiw;
     TextView humidityTextVeiw;
-    Data data;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -52,26 +54,44 @@ public class DetailsFragment extends Fragment
         data.setCurrentCityId( getArguments().getInt("position") );
 
         View view = inflater.inflate(R.layout.fragment_details, null);
-        logoImageView = view.findViewById(R.id.iv_image);
-        favoriteImageVeiw = view.findViewById(R.id.iv_favor);
-        temperatureTextVeiw = view.findViewById(R.id.tv_temperature);
-        typeTextVeiw = view.findViewById(R.id.tv_type);
-        windTextVeiw = view.findViewById(R.id.tv_wind);
-        pressureTextVeiw = view.findViewById(R.id.tv_pressure);
-        humidityTextVeiw = view.findViewById(R.id.tv_humidity);
+
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         if(data.getCurrentCityId()<0)
             return view;
 
         final CityInfo cityInfo = data.getInfo();
 
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle( cityInfo.getTitle() );
+
+        temperatureTextView = view.findViewById(R.id.tv_temperature);
+        temperatureTextView.setText(cityInfo.getTemperatureString());
+
+        logoImageView = view.findViewById(R.id.iv_logo);
+        Glide.with(view.getContext())
+                .load(cityInfo.getLogoUrl())
+                .into(logoImageView);
+
+        bgImageView = view.findViewById(R.id.iv_bg);
+        Glide.with(view.getContext())
+                .load(cityInfo.getPicUrl())
+                .into(bgImageView);
+
+
+        favoriteImageVeiw = view.findViewById(R.id.iv_favor);
         if(cityInfo.isFavorite()) {
             favoriteImageVeiw.setImageResource(R.drawable.ic_star_black_24dp);
         }
         else {
             favoriteImageVeiw.setImageResource(R.drawable.ic_star_border_black_24dp);
         }
-        favoriteImageVeiw.getDrawable().setTint(view.getResources().getColor(R.color.colorAccent2));
+        favoriteImageVeiw.getDrawable().setTint(view.getResources().getColor(R.color.colorAccent2Light));
+
         favoriteImageVeiw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,33 +100,27 @@ public class DetailsFragment extends Fragment
                 }
             }
         });
-        temperatureTextVeiw.setText(""+cityInfo.getTemperatureString());
-        temperatureTextVeiw.setTextColor(cityInfo.getTemperatureColor());
 
-        cityTextVeiw = view.findViewById(R.id.tv_city);
-        if(cityTextVeiw!=null) {
-            cityTextVeiw.setText(cityInfo.getTitle());
-        }
 
         if(data.isShowType()) {
+            typeTextVeiw = view.findViewById(R.id.tv_type);
             typeTextVeiw.setText(cityInfo.getType());
+            typeTextVeiw.setVisibility(View.VISIBLE);
         }
         if(data.isShowWind()) {
+            windTextVeiw = view.findViewById(R.id.tv_wind);
             windTextVeiw.setText(cityInfo.getWind());
+            windTextVeiw.setVisibility(View.VISIBLE);
         }
         if(data.isShowPressure()) {
+            pressureTextVeiw = view.findViewById(R.id.tv_pressure);
             pressureTextVeiw.setText(cityInfo.getPressure());
+            pressureTextVeiw.setVisibility(View.VISIBLE);
         }
         if(data.isShowHumidity()) {
+            humidityTextVeiw = view.findViewById(R.id.tv_humidity);
             humidityTextVeiw.setText(cityInfo.getHumidity());
-        }
-
-        if(data.isShowLogo()) {
-            humidityTextVeiw.setText(cityInfo.getHumidity());
-
-            Glide.with(view.getContext())
-                    .load(cityInfo.getImageUrl())
-                    .into(logoImageView);
+            humidityTextVeiw.setVisibility(View.VISIBLE);
         }
 
 

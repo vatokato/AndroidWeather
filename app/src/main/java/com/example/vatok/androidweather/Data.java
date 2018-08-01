@@ -12,7 +12,6 @@ public class Data implements Serializable {
     private boolean showWind;
     private boolean showPressure;
     private boolean showHumidity;
-    private boolean showLogo;
 
     private String[] cities;
     private List<CityInfo> cityInfoArrayList;
@@ -30,12 +29,10 @@ public class Data implements Serializable {
         this.showWind=false;
         this.showPressure=false;
         this.showHumidity=false;
-        this.showLogo=true;
 
         if(Paper.book().contains("dataRV"))
         {
             cityInfoArrayList = this.getDataRv();
-            //cityInfoArrayList = Paper.book().read("dataRV");
         }
         else {
             for (int i = 0; i < cities.length; i++) {
@@ -128,17 +125,14 @@ public class Data implements Serializable {
         this.showHumidity = showHumidity;
     }
 
-    public boolean isShowLogo() {
-        return showLogo;
-    }
-
-    public void setShowLogo(boolean showLogo) {
-        this.showLogo = showLogo;
-    }
-
     public static List<CityInfo> getDataRv()
     {
         return (List<CityInfo>) Paper.book().read("dataRV");
+    }
+
+    public void save()
+    {
+        Paper.book().write("data", this);
     }
 
     public static void saveDataRv(List<CityInfo> items)

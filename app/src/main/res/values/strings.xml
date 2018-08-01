@@ -22,6 +22,7 @@
     <string name="toastEmptyForm">Пожалуйста заполните все поля</string>
     <string name="toastBackText">Для выхода нажмите еще раз</string>
 
+    <string name="toFavorite">избранное</string>
     <string name="name">Имя</string>
     <string name="type">Тип</string>
     <string name="wind">Ветер</string>

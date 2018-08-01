@@ -1,7 +1,5 @@
 package com.example.vatok.androidweather;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
 import java.util.Random;
 
@@ -9,14 +7,14 @@ public class CityInfo implements Serializable {
     private String title;
     private int id;
     private int temperature;
-    private int temperatureColor;
     private String type;
     private int wind;
     private int pressure;
     private int humidity;
     private boolean favorite;
     private boolean active;
-    private String imageUrl;
+    private String logoUrl;
+    private String picUrl;
 
     public CityInfo(int position, MainActivity context) {
         String[] cities = context.getResources().getStringArray(R.array.cities);
@@ -32,19 +30,10 @@ public class CityInfo implements Serializable {
         this.active = false;
 
         String[] logos = context.getResources().getStringArray(R.array.cityLogos);
-        this.imageUrl = logos[position];
+        this.logoUrl = logos[position];
 
-        int red = 0, green = 0, blue = 0;
-        if(this.temperature>24) {
-            red = (int)((float)255/40*(float)this.temperature);
-        }
-        else if(15 < this.temperature && this.temperature < 25) {
-            green = 255;
-        }
-        else {
-            blue = (int)((float)255/45*(float)-(this.temperature-15));
-        }
-        this.temperatureColor = Color.rgb(red, green, blue);
+        String[] pics = context.getResources().getStringArray(R.array.cityPics);
+        this.picUrl = pics[position];
     }
 
     public String getTitle() {
@@ -75,10 +64,6 @@ public class CityInfo implements Serializable {
         this.type = type;
     }
 
-    public int getTemperatureColor() {
-        return temperatureColor;
-    }
-
     public String getWind() {
         return String.format("%s %s", wind, "м/c");
     }
@@ -99,13 +84,18 @@ public class CityInfo implements Serializable {
         this.favorite = favorite;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getPicUrl() {
+        return picUrl;
     }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+    public void setPicUrl(String picUrl) {this.picUrl = picUrl;  }
 
     public boolean isActive() {
         return active;

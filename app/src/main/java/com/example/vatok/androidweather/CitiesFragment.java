@@ -2,21 +2,34 @@ package com.example.vatok.androidweather;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.List;
 
 public class CitiesFragment extends Fragment
 {
-    OnCitySelectedListener citySelectedListener;
+
     public interface OnCitySelectedListener
     {
-        void onCitySelected(int position);
+        void onCitySelected();
     }
+    OnCitySelectedListener citySelectedListener;
+
+    public interface SettingsClickListener
+    {
+        void onSettingsClick();
+    }
+    SettingsClickListener settingsClickListener;
+
+    Toolbar toolbar;
+    ImageView settingsButton;
     Data data;
     RecyclerView recyclerView;
     RVAdapter adapter;
@@ -38,10 +51,29 @@ public class CitiesFragment extends Fragment
         data.setCurrentCityId(getArguments().getInt("position"));
         View view = inflater.inflate(R.layout.fragment_cities, null);
 
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        settingsButton = view.findViewById(R.id.iv_settings);
+        settingsButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(settingsClickListener!=null){
+                    settingsClickListener.onSettingsClick();
+                }
+            }
+        });
+
         recyclerView = view.findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         items = data.getCityInfoArrayList();
-        adapter = new RVAdapter(items, R.layout.item, new RVAdapter.OnItemClickListener()
+        adapter = new RVAdapter(data, items, R.layout.item, new RVAdapter.OnItemClickListener()
         {
             @Override
             public void onItemClick(CityInfo item, int pos)
@@ -52,11 +84,12 @@ public class CitiesFragment extends Fragment
                         items.get(i).setActive(true);
                     }
                 }
+                data.setCurrentCityId(pos);
+                Data.saveDataRv(items);
                 if(citySelectedListener != null)
                 {
-                    citySelectedListener.onCitySelected(pos);
+                    citySelectedListener.onCitySelected();
                 }
-                Data.saveData(items);
             }
 
         });
@@ -66,9 +99,16 @@ public class CitiesFragment extends Fragment
         return view;
     }
 
+
+
     public void setCitySelectedListener(OnCitySelectedListener citySelectedListener)
     {
         this.citySelectedListener = citySelectedListener;
+    }
+
+    public void setSettingsClickListener(SettingsClickListener settingsClickListener)
+    {
+        this.settingsClickListener = settingsClickListener;
     }
 
 }

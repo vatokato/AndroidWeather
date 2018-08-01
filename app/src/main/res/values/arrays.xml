@@ -22,4 +22,12 @@
         <item>https://present-ekat.nethouse.ru/static/img/0000/0002/5939/25939623.22an7d0pg0.W665.png</item>
         <item>http://234234</item>
     </string-array>
+
+    <string-array name="cityPics">
+        <item>https://svopi.ru/uploads/posts/2016-11/1480412274_01.jpg</item>
+        <item>https://nashural.ru/assets/uploads/IMG_5661.jpg</item>
+        <item>https://ratatum.com/wp-content/uploads/2018/01/1-12.jpg</item>
+        <item>http://gruzoperevozkisyktyvkar.ru/wp-content/uploads/2017/01/gruzoperevozki_murmansk_syktyvkar-1024x624.jpg</item>
+        <item>http://234234</item>
+    </string-array>
 </resources>
