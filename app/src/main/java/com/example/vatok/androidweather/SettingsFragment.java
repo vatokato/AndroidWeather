@@ -38,7 +38,7 @@ public class SettingsFragment extends Fragment {
         nameEditText = view.findViewById(R.id.et_name);
         settingsView = view.findViewById(R.id.v_settings);
         typeSwitch= view.findViewById(R.id.sw_type);
-        typePicSwitch= view.findViewById(R.id.sw_type);
+        typePicSwitch= view.findViewById(R.id.sw_typePic);
         windSwitch= view.findViewById(R.id.sw_wind);
         pressureSwitch= view.findViewById(R.id.sw_pressure);
         humiditySwitch= view.findViewById(R.id.sw_humidity);
