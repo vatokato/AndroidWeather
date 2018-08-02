@@ -9,6 +9,7 @@ import io.paperdb.Paper;
 public class Data implements Serializable {
     private String name;
     private boolean showType;
+    private boolean showTypePic;
     private boolean showWind;
     private boolean showPressure;
     private boolean showHumidity;
@@ -26,24 +27,19 @@ public class Data implements Serializable {
         this.currentCityId = -1;
 
         this.showType=true;
+        this.showTypePic=true;
         this.showWind=false;
         this.showPressure=false;
         this.showHumidity=false;
 
-        if(Paper.book().contains("dataRV"))
-        {
-            cityInfoArrayList = this.getDataRv();
+        for (int i = 0; i < cities.length; i++) {
+            cityInfoArrayList.add(new CityInfo(
+                            i,
+                            context
+                    )
+            );
         }
-        else {
-            for (int i = 0; i < cities.length; i++) {
-                cityInfoArrayList.add(new CityInfo(
-                                i,
-                                context
-                        )
-                );
-            }
-            this.saveDataRv(cityInfoArrayList);
-        }
+        this.save();
     }
 
     public boolean isMasterDetail() {
@@ -78,6 +74,16 @@ public class Data implements Serializable {
         for(int i = 0; i < cityInfoArrayList.size(); i++)
         {
             if(i==this.currentCityId)
+            {
+                return cityInfoArrayList.get(i);
+            }
+        }
+        return null;
+    }
+    public CityInfo getInfo(int cityId) {
+        for(int i = 0; i < cityInfoArrayList.size(); i++)
+        {
+            if(i==cityId)
             {
                 return cityInfoArrayList.get(i);
             }
@@ -125,19 +131,17 @@ public class Data implements Serializable {
         this.showHumidity = showHumidity;
     }
 
-    public static List<CityInfo> getDataRv()
-    {
-        return (List<CityInfo>) Paper.book().read("dataRV");
+    public boolean isShowTypePic() {
+        return showTypePic;
+    }
+
+    public void setShowTypePic(boolean showTypePic) {
+        this.showTypePic = showTypePic;
     }
 
     public void save()
     {
         Paper.book().write("data", this);
-    }
-
-    public static void saveDataRv(List<CityInfo> items)
-    {
-        Paper.book().write("dataRV", items);
     }
 
 }

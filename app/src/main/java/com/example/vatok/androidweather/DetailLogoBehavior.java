@@ -43,7 +43,7 @@ public class DetailLogoBehavior extends CoordinatorLayout.Behavior<ImageView>
     {
         if(appbarInitialY == null)
         {
-            toolbar = parent.findViewById(R.id.toolbar);
+            toolbar = parent.findViewById(R.id.toolbar_details);
             appbarInitialY = dependency.getY();
             appbarHeight = (float) dependency.getHeight() -  toolbar.getHeight();
 

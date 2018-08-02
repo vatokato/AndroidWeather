@@ -64,6 +64,21 @@
             android:checked="true" />
 
         <TextView
+            android:id="@+id/tv_typePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/typePic"
+            android:layout_gravity="left|center_vertical"
+            />
+
+        <Switch
+            android:id="@+id/sw_typePic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:checked="true" />
+
+        <TextView
             android:id="@+id/tv_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

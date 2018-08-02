@@ -25,6 +25,7 @@ public class SettingsFragment extends Fragment {
     EditText nameEditText;
     View settingsView;
     Switch typeSwitch;
+    Switch typePicSwitch;
     Switch windSwitch;
     Switch pressureSwitch;
     Switch humiditySwitch;
@@ -37,6 +38,7 @@ public class SettingsFragment extends Fragment {
         nameEditText = view.findViewById(R.id.et_name);
         settingsView = view.findViewById(R.id.v_settings);
         typeSwitch= view.findViewById(R.id.sw_type);
+        typePicSwitch= view.findViewById(R.id.sw_type);
         windSwitch= view.findViewById(R.id.sw_wind);
         pressureSwitch= view.findViewById(R.id.sw_pressure);
         humiditySwitch= view.findViewById(R.id.sw_humidity);
@@ -59,11 +61,13 @@ public class SettingsFragment extends Fragment {
 
         nameEditText.setText(name);
         typeSwitch.setChecked(data.isShowType());
+        typePicSwitch.setChecked(data.isShowTypePic());
         windSwitch.setChecked(data.isShowWind());
         pressureSwitch.setChecked(data.isShowPressure());
         humiditySwitch.setChecked(data.isShowHumidity());
 
         typeSwitch.setOnCheckedChangeListener(new ChangeListener());
+        typePicSwitch.setOnCheckedChangeListener(new ChangeListener());
         windSwitch.setOnCheckedChangeListener(new ChangeListener());
         pressureSwitch.setOnCheckedChangeListener(new ChangeListener());
         humiditySwitch.setOnCheckedChangeListener(new ChangeListener());
@@ -94,6 +98,7 @@ public class SettingsFragment extends Fragment {
     private void save() {
         data.setName( nameEditText.getText().toString().trim() );
         data.setShowType( typeSwitch.isChecked());
+        data.setShowTypePic( typePicSwitch.isChecked());
         data.setShowWind( windSwitch.isChecked() );
         data.setShowPressure( pressureSwitch.isChecked());
         data.setShowHumidity( humiditySwitch.isChecked() );

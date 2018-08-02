@@ -13,12 +13,14 @@ import android.widget.ImageView;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class CitiesFragment extends Fragment
 {
 
     public interface OnCitySelectedListener
     {
-        void onCitySelected();
+        void onCitySelected(int cityId);
     }
     OnCitySelectedListener citySelectedListener;
 
@@ -51,12 +53,12 @@ public class CitiesFragment extends Fragment
         data.setCurrentCityId(getArguments().getInt("position"));
         View view = inflater.inflate(R.layout.fragment_cities, null);
 
-        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        Timber.d("onCreateView");
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar_cities);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         settingsButton = view.findViewById(R.id.iv_settings);
         settingsButton.setOnClickListener(new View.OnClickListener()
@@ -85,10 +87,9 @@ public class CitiesFragment extends Fragment
                     }
                 }
                 data.setCurrentCityId(pos);
-                Data.saveDataRv(items);
                 if(citySelectedListener != null)
                 {
-                    citySelectedListener.onCitySelected();
+                    citySelectedListener.onCitySelected(pos);
                 }
             }
 
