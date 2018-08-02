@@ -115,12 +115,12 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
             return;
         }
 
-        showCities();
+
 
 
 
         if(savedInstanceState==null){
-
+            showCities();
         }
     }
 
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         data = Paper.book().read("data");
         data.setCurrentCityId((int) Paper.book().read("currentCityId") );
         Timber.d("onRestoreInstanceState");
-        //showCities();
+        showCities();
     }
 
     @Override
