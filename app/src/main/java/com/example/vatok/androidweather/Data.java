@@ -39,7 +39,6 @@ public class Data implements Serializable {
                     )
             );
         }
-        this.save();
     }
 
     public boolean isMasterDetail() {

@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         // если мы из авторизации и в интенте есть имя - инициализируем дату
         if(getIntent().hasExtra("name")) {
             data = new Data(getIntent().getStringExtra("name"), this);
-            data.save();
         }
         // иначе пытаемся получить из базы
         else {
@@ -146,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         data = Paper.book().read("data");
         data.setCurrentCityId((int) Paper.book().read("currentCityId") );
         data.setCityInfoArrayList((ArrayList<CityInfo>) Paper.book().read("cities") );
+        System.out.println(data);
         Timber.d("onRestoreInstanceState");
         showCities();
     }
