@@ -142,6 +142,8 @@ public class Data implements Serializable {
     public void save()
     {
         Paper.book().write("data", this);
+        Paper.book().write("cities", this.getCityInfoArrayList());
+        Paper.book().write("currentCityId", this.getCurrentCityId());
     }
 
 }

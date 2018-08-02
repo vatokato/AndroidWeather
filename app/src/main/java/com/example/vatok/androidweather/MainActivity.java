@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.example.vatok.androidweather.WeatherItem.WeatherItem;
 
+import java.util.ArrayList;
+
 import io.paperdb.Paper;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -106,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         // иначе пытаемся получить из базы
         else {
             data=(Data) Paper.book().read("data");
+            if(Paper.book().contains("cities")) {
+                data.setCityInfoArrayList( (ArrayList<CityInfo>) Paper.book().read("cities") );
+            }
+
         }
         //если инфы нет, значит запускаем авторизацию
         if (data==null) {
@@ -114,10 +120,6 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
             finish();
             return;
         }
-
-
-
-
 
         if(savedInstanceState==null){
             showCities();
@@ -143,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         super.onRestoreInstanceState(savedInstanceState);
         data = Paper.book().read("data");
         data.setCurrentCityId((int) Paper.book().read("currentCityId") );
+        data.setCityInfoArrayList((ArrayList<CityInfo>) Paper.book().read("cities") );
         Timber.d("onRestoreInstanceState");
         showCities();
     }
@@ -152,7 +155,6 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
     {
         super.onSaveInstanceState(outState);
         data.save();
-        Paper.book().write("currentCityId", data.getCurrentCityId());
         Timber.d("onSaveInstanceState");
     }
 
