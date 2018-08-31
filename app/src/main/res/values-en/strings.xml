@@ -22,8 +22,10 @@
     <string name="toastEmptyForm">Please fill all fields</string>
     <string name="toastBackText">Press again for exit</string>
 
+    <string name="toFavorite">favorite</string>
     <string name="name">Name</string>
     <string name="type">Type</string>
+    <string name="typePic">Type Pic</string>
     <string name="wind">Wind</string>
     <string name="pressure">Pressure</string>
     <string name="humidity">Humidity</string>

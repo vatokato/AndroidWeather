@@ -1,30 +1,94 @@
 package com.example.vatok.androidweather;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.example.vatok.androidweather.WeatherItem.WeatherItem;
+
+import java.util.ArrayList;
 
 import io.paperdb.Paper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements DataGetter {
     CitiesFragment.OnCitySelectedListener citySelectedListener = new CitiesFragment.OnCitySelectedListener() {
         @Override
-        public void onCitySelected(int position) {
-            updateFragments(position);
+        public void onCitySelected(int cityId) {
+            data.setCurrentCityId(cityId);
+            detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data.getCurrentCityId());
+            detailsFragment.setFavoriteClickListener(favoriteClickListener);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_detail, detailsFragment)
+                    .addToBackStack(data.getCurrentCityId()+"")
+                    .commit();
+
+            CityInfo city = data.getInfo(cityId);
+            OpenWeatherApp.getApi()
+                    .getData(city.getOwID(), OpenWeatherApp.getAPPID(), "ru", "metric")
+                    .enqueue(new Callback<WeatherItem>() {
+                        @Override
+                        public void onResponse(Call<WeatherItem> call, Response<WeatherItem> response) {
+                            if(response.body()!=null) {
+
+                                detailsFragment.setValues(
+                                        response.body().getMain().getTemp().intValue(),
+                                        response.body().getMain().getPressure(),
+                                        response.body().getMain().getHumidity(),
+                                        response.body().getWeather().get(0).getDescription(),
+                                        response.body().getWeather().get(0).getIcon(),
+                                        response.body().getWind().getSpeed()
+                                );
+                                Toast.makeText(MainActivity.this, "Данные обновлены",Toast.LENGTH_SHORT ).show();
+                                return;
+                            }
+                            Toast.makeText(MainActivity.this, "Ошибка обновления данных",Toast.LENGTH_SHORT ).show();
+                            System.err.println(response.code()+": "+response.message());
+                        }
+                        @Override
+                        public void onFailure(Call<WeatherItem> call, Throwable t) {
+                            System.err.println(t);
+                        }
+                    });
+
         }
     };
+
+    CitiesFragment.SettingsClickListener settingsClickListener = new CitiesFragment.SettingsClickListener() {
+        @Override
+        public void onSettingsClick() {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fl_settings, SettingsFragment.newInstance())
+                    .addToBackStack("settings")
+                    .commit();
+        }
+    };
+
+    DetailsFragment.OnFavoriteClickListener favoriteClickListener = new DetailsFragment.OnFavoriteClickListener() {
+        @Override
+        public void onFavoriteClick(ImageView iv, CityInfo cityInfo) {
+            if(cityInfo.isFavorite()) {
+                cityInfo.setFavorite(false);
+                iv.setImageResource(R.drawable.ic_star_border_black_24dp);
+            }
+            else {
+                cityInfo.setFavorite(true);
+                iv.setImageResource(R.drawable.ic_star_black_24dp);
+            }
+            iv.getDrawable().setTint(getResources().getColor(R.color.colorAccent2Light));
+            data.save();
+        }
+    };
+
     private Data data;
-    Toolbar toolbar;
-    ImageView settingsButton;
-    boolean firstTime;
-    CitiesFragment citiesFragment;
     DetailsFragment detailsFragment;
+    CitiesFragment citiesFragment;
 
     @Override
     public Data getData() {
@@ -36,22 +100,17 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        settingsButton = findViewById(R.id.iv_settings);
-
         // если мы из авторизации и в интенте есть имя - инициализируем дату
         if(getIntent().hasExtra("name")) {
             data = new Data(getIntent().getStringExtra("name"), this);
-            Paper.book().write("data", data);
         }
         // иначе пытаемся получить из базы
         else {
             data=(Data) Paper.book().read("data");
+            if(Paper.book().contains("cities")) {
+                data.setCityInfoArrayList( (ArrayList<CityInfo>) Paper.book().read("cities") );
+            }
+
         }
         //если инфы нет, значит запускаем авторизацию
         if (data==null) {
@@ -61,28 +120,9 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
             return;
         }
 
-        firstTime = true;
         if(savedInstanceState==null){
-            updateFragments(data.getCurrentCityId());
+            showCities();
         }
-
-        //фрагмент настроек
-        settingsButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if(getSupportFragmentManager().findFragmentById(R.id.fl_settings) instanceof SettingsFragment)
-                {
-                    getSupportFragmentManager().popBackStack();
-                    return;
-                }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_settings, SettingsFragment.newInstance())
-                        .addToBackStack("settings")
-                        .commit();
-            }
-        });
     }
 
     @Override
@@ -90,63 +130,54 @@ public class MainActivity extends AppCompatActivity implements DataGetter {
     {
         switch (item.getItemId()){
             case android.R.id.home:
+                Timber.d("home pressed");
                 super.onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         data = Paper.book().read("data");
         data.setCurrentCityId((int) Paper.book().read("currentCityId") );
-        updateFragments(data.getCurrentCityId());
+        data.setCityInfoArrayList((ArrayList<CityInfo>) Paper.book().read("cities") );
+        System.out.println(data);
+        Timber.d("onRestoreInstanceState");
+        showCities();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        Paper.book().write("data", data);
-        Paper.book().write("currentCityId", data.getCurrentCityId());
+        data.save();
+        Timber.d("onSaveInstanceState");
     }
 
-    public void updateFragments(int position) {
-        data.setCurrentCityId(position);
-        data.setMasterDetail( getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE );
-
-        //фрагменты городов
-        citiesFragment = (CitiesFragment) CitiesFragment.newInstance(position);
+    public void showCities() {
+        citiesFragment =(CitiesFragment) CitiesFragment.newInstance(data.getCurrentCityId());
         citiesFragment.setCitySelectedListener(citySelectedListener);
-        detailsFragment = (DetailsFragment) DetailsFragment.newInstance(position);
+        citiesFragment.setSettingsClickListener(settingsClickListener);
 
-        if(firstTime) {
-            if(data.isMasterDetail()) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_master, citiesFragment)
-                        .replace(R.id.fl_detail, detailsFragment)
-                        .commit();
-            }
-            else {
-                Fragment fr = getSupportFragmentManager().findFragmentById(R.id.fl_detail);
-                if(fr!=null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .remove(fr)
-                            .commit();
-                }
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fl_master, citiesFragment)
-                        .commit();
-            }
-            firstTime = false;
-        }
-        else {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_master, citiesFragment)
+                .commit();
+
+        //если есть детали при перевороте
+        if(getSupportFragmentManager().findFragmentById(R.id.fl_detail) instanceof DetailsFragment) {
+            //отшагнем и пересоздадим
+            getSupportFragmentManager().popBackStack();
+            detailsFragment = (DetailsFragment) DetailsFragment.newInstance(data.getCurrentCityId());
+            detailsFragment.setFavoriteClickListener(favoriteClickListener);
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_master, citiesFragment)
                     .replace(R.id.fl_detail, detailsFragment)
-                    .addToBackStack(""+position)
+                    .addToBackStack(data.getCurrentCityId()+"")
                     .commit();
         }
     }
+
 }

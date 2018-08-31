@@ -1,48 +1,54 @@
 package com.example.vatok.androidweather;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
-import java.util.Random;
 
 public class CityInfo implements Serializable {
     private String title;
+    private int id;
+    private int owID;
     private int temperature;
-    private int temperatureColor;
     private String type;
+    private String typePic;
     private int wind;
     private int pressure;
     private int humidity;
     private boolean favorite;
     private boolean active;
-    private String imageUrl;
+    private String logoUrl;
+    private String picUrl;
+
+    public void setWind(int wind) {
+        this.wind = wind;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidity = humidity;
+    }
 
     public CityInfo(int position, MainActivity context) {
         String[] cities = context.getResources().getStringArray(R.array.cities);
+        int[] owIds = context.getResources().getIntArray(R.array.cityIdsOWM);
+        this.id = position;
         this.title = cities[position];
-        this.temperature = new Random().nextInt(70)-30;
-        String[] types = context.getResources().getStringArray(R.array.weatherTypes);
-        this.type = types[new Random().nextInt(types.length)];
-        this.wind = new Random().nextInt(30);
-        this.pressure = new Random().nextInt(100)+700;
-        this.humidity = new Random().nextInt(80)+20;
+        this.owID = owIds[position];
+        this.temperature = -100;
+        this.type = "unknown";
+        this.typePic = "";
+        this.wind = -100;
+        this.pressure = -100;
+        this.humidity = -100;
         this.favorite = false;
         this.active = false;
 
         String[] logos = context.getResources().getStringArray(R.array.cityLogos);
-        this.imageUrl = logos[position];
+        this.logoUrl = logos[position];
 
-        int red = 0, green = 0, blue = 0;
-        if(this.temperature>24) {
-            red = (int)((float)255/40*(float)this.temperature);
-        }
-        else if(15 < this.temperature && this.temperature < 25) {
-            green = 255;
-        }
-        else {
-            blue = (int)((float)255/45*(float)-(this.temperature-15));
-        }
-        this.temperatureColor = Color.rgb(red, green, blue);
+        String[] pics = context.getResources().getStringArray(R.array.cityPics);
+        this.picUrl = pics[position];
     }
 
     public String getTitle() {
@@ -73,10 +79,6 @@ public class CityInfo implements Serializable {
         this.type = type;
     }
 
-    public int getTemperatureColor() {
-        return temperatureColor;
-    }
-
     public String getWind() {
         return String.format("%s %s", wind, "м/c");
     }
@@ -97,13 +99,18 @@ public class CityInfo implements Serializable {
         this.favorite = favorite;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public String getPicUrl() {
+        return picUrl;
     }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+    public void setPicUrl(String picUrl) {this.picUrl = picUrl;  }
 
     public boolean isActive() {
         return active;
@@ -111,5 +118,25 @@ public class CityInfo implements Serializable {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getOwID() {
+        return owID;
+    }
+
+    public void setOwID(int owID) {
+        this.owID = owID;
+    }
+
+    public String getTypePic() {
+        return typePic;
+    }
+
+    public void setTypePic(String typePic) {
+        this.typePic = typePic;
     }
 }

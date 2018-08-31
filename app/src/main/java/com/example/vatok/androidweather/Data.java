@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.paperdb.Paper;
-import timber.log.Timber;
 
 public class Data implements Serializable {
     private String name;
     private boolean showType;
+    private boolean showTypePic;
     private boolean showWind;
     private boolean showPressure;
     private boolean showHumidity;
-    private boolean showLogo;
 
     private String[] cities;
     private List<CityInfo> cityInfoArrayList;
@@ -28,25 +27,17 @@ public class Data implements Serializable {
         this.currentCityId = -1;
 
         this.showType=true;
+        this.showTypePic=true;
         this.showWind=false;
         this.showPressure=false;
         this.showHumidity=false;
-        this.showLogo=true;
 
-        Timber.d("gen");
-
-        if(Paper.book().contains("dataRV"))
-        {
-            cityInfoArrayList = Paper.book().read("dataRV");
-        }
-        else {
-            for (int i = 0; i < cities.length; i++) {
-                cityInfoArrayList.add(new CityInfo(
-                                i,
-                                context
-                        )
-                );
-            }
+        for (int i = 0; i < cities.length; i++) {
+            cityInfoArrayList.add(new CityInfo(
+                            i,
+                            context
+                    )
+            );
         }
     }
 
@@ -82,6 +73,16 @@ public class Data implements Serializable {
         for(int i = 0; i < cityInfoArrayList.size(); i++)
         {
             if(i==this.currentCityId)
+            {
+                return cityInfoArrayList.get(i);
+            }
+        }
+        return null;
+    }
+    public CityInfo getInfo(int cityId) {
+        for(int i = 0; i < cityInfoArrayList.size(); i++)
+        {
+            if(i==cityId)
             {
                 return cityInfoArrayList.get(i);
             }
@@ -129,17 +130,19 @@ public class Data implements Serializable {
         this.showHumidity = showHumidity;
     }
 
-    public boolean isShowLogo() {
-        return showLogo;
+    public boolean isShowTypePic() {
+        return showTypePic;
     }
 
-    public void setShowLogo(boolean showLogo) {
-        this.showLogo = showLogo;
+    public void setShowTypePic(boolean showTypePic) {
+        this.showTypePic = showTypePic;
     }
 
-    public static void saveData(List<CityInfo> items)
+    public void save()
     {
-        Paper.book().write("dataRV", items);
+        Paper.book().write("data", this);
+        Paper.book().write("cities", this.getCityInfoArrayList());
+        Paper.book().write("currentCityId", this.getCurrentCityId());
     }
 
 }

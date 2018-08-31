@@ -22,8 +22,10 @@
     <string name="toastEmptyForm">Пожалуйста заполните все поля</string>
     <string name="toastBackText">Для выхода нажмите еще раз</string>
 
+    <string name="toFavorite">избранное</string>
     <string name="name">Имя</string>
     <string name="type">Тип</string>
+    <string name="typePic">Тип изображение</string>
     <string name="wind">Ветер</string>
     <string name="pressure">Давление</string>
     <string name="humidity">Влажность</string>

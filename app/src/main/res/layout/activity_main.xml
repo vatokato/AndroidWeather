@@ -1,43 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:elevation="4dp">
-
-        <ImageView
-            android:id="@+id/iv_settings"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="end|center_vertical"
-            android:src="@mipmap/ic_launcher"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="10dp"/>
-
-    </android.support.v7.widget.Toolbar>
-
-    <FrameLayout
-        android:id="@+id/fl_start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="?attr/actionBarSize"/>
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/fl_master"
@@ -45,7 +12,8 @@
         android:layout_height="match_parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <FrameLayout
@@ -54,7 +22,8 @@
         android:layout_height="match_parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <FrameLayout
@@ -63,8 +32,5 @@
         android:layout_height="match_parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="?attr/actionBarSize"
         />
-
-
 </android.support.constraint.ConstraintLayout>
